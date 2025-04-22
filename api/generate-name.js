@@ -25,10 +25,9 @@ export default async function handler(req, res) {
     });
 
     const data = await openaiRes.json();
+    const resultText = data.choices?.[0]?.message?.content || "No result";
+    res.status(200).json({ result: resultText });
 
-    // 👇 응답 전체를 그대로 반환 (디버깅용)
-    res.status(200).json({ debug: data });
-    
   } catch (e) {
     console.error("GPT 호출 실패:", e);
     res.status(500).json({ error: "Something went wrong", details: e.message });
