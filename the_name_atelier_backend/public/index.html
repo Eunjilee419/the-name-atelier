@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Name Atelier – AI Name Generator</title>
+  <meta name="description" content="Find your perfect name instantly. Brand or personal, we generate meaningful, stylish names using AI.">
+  <meta name="keywords" content="make name, naming, 영어이름, 英文名, 사주 이름, AI name generator, brand name ideas, 작명">
+</head>
+<body>
+  <h1>The Name Atelier</h1>
+  <form id="nameForm">
+    <label>Purpose:
+      <select name="purpose">
+        <option value="personal">Personal Name</option>
+        <option value="brand">Brand Name</option>
+      </select>
+    </label><br>
+    <label>Gender:
+      <select name="gender">
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+        <option value="neutral">Neutral</option>
+      </select>
+    </label><br>
+    <label>Date of Birth: <input type="date" name="dob"></label><br>
+    <label>Desired Image/Traits: <input type="text" name="traits" placeholder="e.g., wisdom, success"></label><br>
+    <button type="submit">Generate Name</button>
+  </form>
+  <div id="results" style="margin-top:20px;"></div>
+
+  <script>
+    document.getElementById('nameForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const payload = {
+        purpose: form.purpose.value,
+        gender: form.gender.value,
+        dob: form.dob.value,
+        traits: form.traits.value
+      };
+
+      const res = await fetch("/api/generate-name", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById('results').innerText = data.result || "No result";
+    });
+  </script>
+</body>
+</html>
