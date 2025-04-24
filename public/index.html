@@ -143,10 +143,15 @@
       document.getElementById("nameForm").addEventListener("submit", async function(e) {
         e.preventDefault();
 
-        gtag('event', 'generate_click', {
-  'event_category': 'Name Generator',
-  'event_label': 'Generate Button'
-});
+       if (typeof gtag === "function") {
+  gtag('event', 'generate_click', {
+    'event_category': 'Name Generator',
+    'event_label': 'Generate Button'
+  });
+} else {
+  console.warn("gtag is not defined yet.");
+}
+
 
         const form = e.target;
         const payload = {
