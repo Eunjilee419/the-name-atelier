@@ -14,43 +14,37 @@
   <title>The Name Atelier</title>
   <meta name="description" content="AI-powered name generator. Generate personal or brand names in English, Korean, Chinese, or Japanese.">
   <meta name="keywords" content="naming, make name, name generator, name ideas, AI naming, 브랜드 이름, 작명, 英文名, hacer nombre, baby names, startup name ideas, fantasy names, brand name, business name, atelier name, studio name, art studio name, nickname">
-  <style>
-   body {
-  background-color: #fffbde;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+ <style>
+  body {
+    background-color: #fffbde;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .container {
+    max-width: 600px;
+    width: 90%;
+    padding: 20px;
+    background-color: #fffef6;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-sizing: border-box;
+    margin: 60px auto 0 auto;
+  }
+  footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+  }
+</style>
 
-.page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-    .container {
-      max-width: 600px;
-      width: 90%;
-      padding: 20px;
-      background-color: #fffef6;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      border-radius: 12px;
-      box-sizing: border-box;
-    }
-    h1#title {
-      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-      font-weight: 700;
-    }
-    label, select, input, button {
-      font-size: 16px;
-      margin: 8px 0;
-    }
-    #results, #loading {
-      margin-top: 20px;
-    }
-  </style>
   <!-- Cookie Consent Script -->
   <script type="text/javascript" src="/tarteaucitron.js"></script>
   <script type="text/javascript">
