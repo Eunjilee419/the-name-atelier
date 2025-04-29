@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Name Atelier</title>
+  <meta name="description" content="AI-powered name generator. Generate personal or brand names in English, Korean, Chinese, or Japanese.">
+  <style>
+    body {
+      background-color: #fffbde;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      background-color: #fffef6;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-sizing: border-box;
+    }
+
+    h1#title {
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-weight: 700;
+    }
+
+    label, select, input, button {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    #results, #loading {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="container">
+      <h1 id="title">The Name Atelier</h1>
+
+      <label for="langSelect">🌐 Language:
+        <select id="langSelect">
+          <option value="en">English</option>
+          <option value="ko">한국어</option>
+          <option value="zh">中文</option>
+          <option value="ja">日本語</option>
+        </select>
+      </label><br><br>
+
+      <form id="nameForm">
+        <label id="lblPurpose">Purpose:
+          <select name="purpose">
+            <option value="personal">Personal Name</option>
+            <option value="brand">Brand Name</option>
+          </select>
+        </label><br>
+        <label id="lblGender">Gender:
+          <select name="gender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="neutral">Neutral</option>
+          </select>
+        </label><br>
+        <label id="lblDOB">Date of Birth: <input type="date" name="dob"></label><br>
+        <label id="lblTraits">Desired Image/Traits: <input type="text" name="traits" placeholder=""></label><br>
+        <button type="submit" id="btnGenerate">Generate Name</button>
+      </form>
+
+      <div id="loading" style="display:none; color:gray;">⏳ Loading...</div>
+      <div id="results"></div>
+    </div>
+
+    <footer style="width: 100%; padding: 20px 0; background-color: #f9f9f9; text-align: center; font-size: 14px; color: #555; box-sizing: border-box;">
+      <div style="max-width: 720px; margin: 0 auto;">
+        <p>
+          <a href="/about.html" style="margin: 0 10px; text-decoration: none; color: #555;">About</a> |
+          <a href="/contact.html" style="margin: 0 10px; text-decoration: none; color: #555;">Contact</a>
+        </p>
+        <p style="margin-top: 10px;">© 2025 The Name Atelier</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
