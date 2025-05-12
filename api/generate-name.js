@@ -1,105 +1,74 @@
+
 export default async function handler(req, res) {
-  const { purpose, gender, dob, traits, lang, element, excessElement } = req.body;
+  const { purpose, gender, dob, traits, lang } = req.body;
 
   const prompts = {
-    en: `You are a naming expert using Korean saju (Four Pillars) and sound-element theory (소리오행).
-Generate 3 English name suggestions for the user with the following information:
+    en: `You are a Korean saju-based naming expert. The user only provides their date of birth and desired traits.
 
-- Date of Birth: ${dob}
-- Gender: ${gender}
-- Purpose: ${purpose}
-- Desired traits: ${traits}
-- Missing element: ${element}
-- Excessive element: ${excessElement}
+Step 1: Analyze the user's saju (Four Pillars) based on their birthdate: ${dob}.
+- Determine which element is missing or weak.
+- Determine if any element is excessive.
 
-Names must be authentic English names (not romanized Korean names).
+Step 2: Based on that, generate 3 English name ideas that:
+- Start with a letter corresponding to the missing element:
+  Wood: G, K, C
+  Fire: N, D, R, L, T
+  Earth: M, B, F, P
+  Metal: S, J, Z, Ch
+  Water: H, I, E, O, U
+- Strictly avoid names starting with letters related to the excessive element. No exceptions.
+- Use the traits, purpose, and gender below to reflect the desired tone and meaning.
 
-Each name must:
-1. Start with a letter that matches the needed element:
-   - Wood: G, K, C
-   - Fire: N, D, R, L, T
-   - Earth: M, B, F, P
-   - Metal: S, J, Z, Ch
-   - Water: H, I, E, O, U
-Before suggesting names, first filter out any names starting with the excessive element (${excessElement}). Do not include them in your output.
+Traits: ${traits}
+Gender: ${gender}
+Purpose: ${purpose}`,
 
-Strict rule: Do NOT use any name starting with letters that correspond to the excessive element (${excessElement}). No exceptions.
+    ja: `あなたは韓国の四柱推命と音の五行に基づく名付けの専門家です。
 
+ステップ1：生年月日 ${dob} に基づき、ユーザーの四柱を分析してください。
+- 不足または弱い五行を特定してください。
+- 過剰な五行があれば、それも特定してください。
 
-2. Avoid initials that correspond to the excessive element (${excessElement}).
-3. Fit the user's desired traits.
-4. For each name, explain its meaning, sound-element logic, and saju balance.`,
+ステップ2：その分析をもとに、次の条件で日本の名前を3つ提案してください：
+- 不足している五行に対応するローマ字で始めること
+- 過剰な五行に対応する頭文字で始まる名前は絶対に含めないこと
+- ユーザーの希望する特徴、性別、目的に合う名前であること
 
-    ja: `あなたは「The Name Atelier」のネーミング専門家です。四柱推命（Saju）と音の五行理論（소리오행）に基づき、以下の情報を持つユーザーのために、日本語の名前を3つ提案してください。
+特徴: ${traits}
+性別: ${gender}
+目的: ${purpose}`,
 
-- 生年月日: ${dob}
-- 性別: ${gender}
-- 目的: ${purpose}
-- 希望する印象・特徴: ${traits}
-- 不足している五行: ${element}
+    ko: `당신은 한국 사주 이론과 소리오행에 기반한 작명 전문가입니다.
 
-名前は本物の日本語の名前（英語の音訳ではない）でなければなりません。
+1단계: 사용자 생년월일 ${dob} 를 바탕으로 사주를 분석해주세요.
+- 부족하거나 약한 오행을 찾고,
+- 과잉된 오행이 있다면 그것도 파악합니다.
 
-各名前について：
-1. 以下に対応するローマ字の頭文字を使用してください：
-   - 木: G, K, C
-   - 火: N, D, R, L, T
-   - 土: M, B, F, P
-   - 金: S, J, Z, Ch
-   - 水: H, I, E, O, U
-名前を提案する前に、過剰な五行に対応する頭文字の名前を必ず除外してください（例：火が過剰なら N, D, R など）。出力に含めないでください。
+2단계: 이를 바탕으로 다음 조건에 따라 이름을 지어주세요:
+- 부족한 오행에 해당하는 자음으로 시작해야 합니다.
+  목(木): ㄱ, ㅋ / 화(火): ㄴ, ㄷ, ㄹ, ㅌ / 토(土): ㅁ, ㅂ, ㅍ / 금(金): ㅅ, ㅈ, ㅊ / 수(水): ㅇ, ㅎ
+- 과잉된 오행 자음은 절대 포함하지 마세요. 예외 없이 제거하세요.
+- 사용자 성별, 용도, 원하는 이미지/특성도 반영해주세요.
 
-厳格なルール：過剰な五行に対応する頭文字で始まる名前は絶対に使用しないでください。例外はありません。
+특성: ${traits}
+성별: ${gender}
+이름 용도: ${purpose}`,
 
+    zh: `你是一位根据四柱命理与声音五行进行命名的专家。
 
-2. 過剰な五行に対応する頭文字は避けてください。
-3. 名前の意味、音の五行の関連性、四柱とのバランスを説明してください。`,
+第一步：请根据出生日期 ${dob} 分析用户的四柱结构。
+- 判断哪种五行元素不足或较弱。
+- 同时判断是否存在某个过剩元素。
 
-    ko: `당신은 'The Name Atelier'의 작명 전문가입니다. 다음 정보를 바탕으로 한국 이름 3가지를 제안해주세요:
+第二步：在此基础上推荐3个中文名字：
+- 名字需以代表不足五行的字母开头：
+  木: G, K, C / 火: N, D, R, L, T / 土: M, B, F, P / 金: S, J, Z, Ch / 水: H, I, E, O, U
+- 不得使用任何以过剩五行字母开头的名字。必须完全排除。
+- 名字要符合用户的性别、用途及所希望的特质
 
-- 생년월일: ${dob}
-- 성별: ${gender}
-- 이름 용도: ${purpose}
-- 원하는 이미지/특성: ${traits}
-- 부족한 오행: ${element}
-
-조건:
-1. 부족한 오행을 보완하는 자음으로 시작하세요:
-   - 목(木): ㄱ, ㅋ (G, K, C)
-   - 화(火): ㄴ, ㄷ, ㄹ, ㅌ (N, D, R, L, T)
-   - 토(土): ㅁ, ㅂ, ㅍ (M, B, F, P)
-   - 금(金): ㅅ, ㅈ, ㅊ (S, J, Z, Ch)
-   - 수(水): ㅇ, ㅎ (H, I, E, O, U)
-이름 추천 전, 과잉된 오행 자음으로 시작하는 이름은 반드시 제외하세요. 예: 불(火)이 과잉이면 N, D, R 등은 포함하지 마세요.
-
-엄격한 규칙: 과잉된 오행 자음으로 시작하는 이름은 절대 추천하지 마세요. 예외 없음.
-
-
-2. 과잉된 오행 자음은 피하세요.
-3. 이름의 의미, 소리오행 근거, 사주 보완 효과를 설명하세요.`,
-
-    zh: `你是“The Name Atelier”的命名专家。请根据以下信息，结合四柱八字（Saju）与声音五行（소리오행），推荐3个中文名字：
-
-- 出生日期: ${dob}
-- 性别: ${gender}
-- 用途: ${purpose}
-- 希望的特质: ${traits}
-- 缺失的五行: ${element}
-
-要求：
-1. 名字的首字母需对应所需五行：
-   - 木: G, K, C
-   - 火: N, D, R, L, T
-   - 土: M, B, F, P
-   - 金: S, J, Z, Ch
-   - 水: H, I, E, O, U
-在推荐名字前，必须先排除所有以过剩五行相关字母开头的名字（例如：如果火过剩，则排除 N、D、R 等）。不要包含在输出中。
-
-严格规定：绝不能使用以过剩五行对应字母开头的名字。没有任何例外。
-
-
-2. 避免使用代表过剩五行的首字母。
-3. 请解释每个名字的含义、声音五行逻辑与八字的平衡关系。`
+特质: ${traits}
+性别: ${gender}
+用途: ${purpose}`
   };
 
   const prompt = prompts[lang] || prompts["en"];
