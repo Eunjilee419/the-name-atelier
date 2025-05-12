@@ -11,6 +11,8 @@ Generate 3 English name suggestions for the user with the following information:
 - Desired traits: ${traits}
 - Missing element: ${element}
 
+Names must be authentic English names (not romanized Korean names).
+
 Each name must:
 1. Start with a letter that matches the needed element:
    - Wood: G, K, C
@@ -29,6 +31,8 @@ Each name must:
 - 目的: ${purpose}
 - 希望する印象・特徴: ${traits}
 - 不足している五行: ${element}
+
+名前は本物の日本語の名前（英語の音訳ではない）でなければなりません。
 
 各名前について：
 1. 以下に対応するローマ字の頭文字を使用してください：
