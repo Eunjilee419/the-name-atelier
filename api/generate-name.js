@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const { purpose, gender, dob, traits, lang, element } = req.body;
+  const { purpose, gender, dob, traits, lang, element, excessElement } = req.body;
 
   const prompts = {
     en: `You are a naming expert using Korean saju (Four Pillars) and sound-element theory (소리오행).
@@ -10,6 +10,7 @@ Generate 3 English name suggestions for the user with the following information:
 - Purpose: ${purpose}
 - Desired traits: ${traits}
 - Missing element: ${element}
+- Excessive element: ${excessElement}
 
 Names must be authentic English names (not romanized Korean names).
 
@@ -20,7 +21,7 @@ Each name must:
    - Earth: M, B, F, P
    - Metal: S, J, Z, Ch
    - Water: H, I, E, O, U
-2. Avoid initials that correspond to excessive elements.
+2. Avoid initials that correspond to the excessive element (${excessElement}).
 3. Fit the user's desired traits.
 4. For each name, explain its meaning, sound-element logic, and saju balance.`,
 
