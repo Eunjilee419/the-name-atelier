@@ -9,27 +9,20 @@ export default async function handler(req, res) {
   const { missing, excessive } = analyzeSaju(sajuChars);
 
   const prompts = {
-    en: `You are a Korean saju-based naming expert.
+    en: `You're a naming expert using Korean saju (Four Pillars) and sound-element theory.
 
-The user was born on: ${dob}
-Your job is to analyze their saju, then generate English names that match.
-
+Birthdate: ${dob}
 Missing element: ${missing}
 Excessive element: ${excessive}
-
-Traits: ${traits}
 Gender: ${gender}
+Traits: ${traits}
 Purpose: ${purpose}
 
 Rules:
-1. Only use names starting with a letter matching the missing element:
-   - Wood: G, K, C
-   - Fire: N, D, R, L, T
-   - Earth: M, B, F, P
-   - Metal: S, J, Z, Ch
-   - Water: H, I, E, O, U
-2. Never use names starting with letters of the excessive element. No exceptions.
-3. Each name must include meaning + how it reflects saju + sound-element logic.`
+- Use only initials matching the missing element:
+  Wood: G, K, C | Fire: N, D, R, L, T | Earth: M, B, F, P | Metal: S, J, Z, Ch | Water: H, I, E, O, U
+- Never use initials tied to the excessive element.
+- For each name, include meaning and saju logic.`
   };
 
   const prompt = prompts[lang] || prompts["en"];
