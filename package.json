@@ -1,0 +1,7 @@
+{
+  "name": "the-name-atelier",
+  "version": "1.0.0",
+  "dependencies": {
+    "sasin": "^1.0.4"
+  }
+}
