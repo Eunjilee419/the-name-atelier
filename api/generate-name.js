@@ -21,6 +21,8 @@ Each name must:
    - Earth: M, B, F, P
    - Metal: S, J, Z, Ch
    - Water: H, I, E, O, U
+Strict rule: Do NOT use any name starting with letters that correspond to the excessive element (${excessElement}). No exceptions.
+
 2. Avoid initials that correspond to the excessive element (${excessElement}).
 3. Fit the user's desired traits.
 4. For each name, explain its meaning, sound-element logic, and saju balance.`,
@@ -42,6 +44,8 @@ Each name must:
    - 土: M, B, F, P
    - 金: S, J, Z, Ch
    - 水: H, I, E, O, U
+厳格なルール：過剰な五行に対応する頭文字で始まる名前は絶対に使用しないでください。例外はありません。
+
 2. 過剰な五行に対応する頭文字は避けてください。
 3. 名前の意味、音の五行の関連性、四柱とのバランスを説明してください。`,
 
@@ -60,6 +64,8 @@ Each name must:
    - 토(土): ㅁ, ㅂ, ㅍ (M, B, F, P)
    - 금(金): ㅅ, ㅈ, ㅊ (S, J, Z, Ch)
    - 수(水): ㅇ, ㅎ (H, I, E, O, U)
+엄격한 규칙: 과잉된 오행 자음으로 시작하는 이름은 절대 추천하지 마세요. 예외 없음.
+
 2. 과잉된 오행 자음은 피하세요.
 3. 이름의 의미, 소리오행 근거, 사주 보완 효과를 설명하세요.`,
 
@@ -78,6 +84,8 @@ Each name must:
    - 土: M, B, F, P
    - 金: S, J, Z, Ch
    - 水: H, I, E, O, U
+严格规定：绝不能使用以过剩五行对应字母开头的名字。没有任何例外。
+
 2. 避免使用代表过剩五行的首字母。
 3. 请解释每个名字的含义、声音五行逻辑与八字的平衡关系。`
   };
