@@ -217,7 +217,7 @@ if (!data.result || !Array.isArray(data.result)) {
 document.getElementById("results").innerHTML = data.result.map(item => {
   return `<div style='margin-bottom: 16px;'>
     <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
-    <span style='color:gray;'>💬 ${item.meaning?.[payload.lang] || ''}</span><br/>
+    <span style='color:gray;'>💬 ${item.meaning?.[payload.lang] ? item.meaning[payload.lang] : '(No meaning provided)'}</span><br/>
     <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
     <span style='font-size: 13px;'>🧭 ${item.comment || ''}</span>
   </div>`;
