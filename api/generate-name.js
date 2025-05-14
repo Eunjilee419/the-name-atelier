@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing dob parameter.' });
   }
 
-  const filePath = path.join(process.cwd(), 'public', 'saju_full_1900_2050.json');
+  const filePath = path.join(process.cwd(), 'saju_full_1900_2050.json');
   let sajuDB;
   try {
     sajuDB = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
