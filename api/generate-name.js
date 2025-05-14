@@ -16,7 +16,8 @@ export default async function handler(req, res) {
 
   try {
     const saju = getSajuFromDate(dob);
-    const lacking = getLackingElements(saju);
+    const lacking = getLackingElements(saju) || [];
+    const lackingText = Array.isArray(lacking) ? lacking.join(', ') : 'unknown';
 
     const prompt = `
 You are an expert Korean saju-based name generator.
@@ -26,7 +27,7 @@ Saju information:
 - Month Pillar: ${saju.month}
 - Day Pillar: ${saju.day}
 - Hour Pillar: ${saju.hour}
-- Lacking elements: ${lacking.join(', ')}
+- Lacking elements: ${lackingText}
 
 User info:
 - Purpose: ${purpose}
