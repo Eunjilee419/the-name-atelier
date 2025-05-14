@@ -46,16 +46,11 @@ User info:
 
 ${nameStyleInstruction}
 For each name, explain its meaning and which element it complements.
-Respond in JSON array format like this:
-[
-  {
-    "name": "...",
-    "meaning": "...",
-    "element": "...",
-    "comment": "..."
-  },
-  ...
-]
+Each result must include:
+- name: the chosen name
+- meaning: the meaning of the name itself (not the element)
+- element: one of 木, 火, 土, 金, 水
+- comment: how the name complements the lacking saju element
     `.trim();
 
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
