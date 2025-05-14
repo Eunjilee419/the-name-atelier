@@ -1,9 +1,9 @@
 
 // /api/generate-name.js (OpenAI fetch 방식 - no openai package)
 
-import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
+const { getSajuFromDate, getLackingElements } = require('../lib/sajuUtils.js');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
