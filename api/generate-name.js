@@ -16,6 +16,18 @@ export default async function handler(req, res) {
     const lacking = getLackingElements(saju) || [];
     const lackingText = Array.isArray(lacking) ? lacking.join(', ') : 'unknown';
 
+    // 언어별 지시 보완
+    let nameStyleInstruction = '';
+    if (lang === 'en') {
+      nameStyleInstruction = 'Generate 3 culturally appropriate modern English first names (not Korean romanizations).';
+    } else if (lang === 'zh') {
+      nameStyleInstruction = 'Generate 3 appropriate Chinese given names (no surname).';
+    } else if (lang === 'ja') {
+      nameStyleInstruction = 'Generate 3 appropriate Japanese given names (名前のみ, no surname).';
+    } else {
+      nameStyleInstruction = 'Generate 3 appropriate Korean names in native Hangul.';
+    }
+
     const prompt = `
 You are an expert Korean saju-based name generator.
 
@@ -32,7 +44,9 @@ User info:
 - Desired traits: ${traits || 'N/A'}
 - Output language: ${lang}
 
-Generate 3 appropriate ${lang} names based on this saju and explain the meaning and which element the name complements. Respond in JSON array format like this:
+${nameStyleInstruction}
+For each name, explain its meaning and which element it complements.
+Respond in JSON array format like this:
 [
   {
     "name": "...",
@@ -53,7 +67,8 @@ Generate 3 appropriate ${lang} names based on this saju and explain the meaning 
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.9
+        temperature: 0.9,
+        max_tokens: 800
       })
     });
 
