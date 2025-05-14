@@ -1,8 +1,10 @@
 
-// generate-name.js (Vercel API Function)
+// /api/generate-name.js
 
 import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
-import nameDB from '../data/nameData.js';
+import { OpenAI } from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -16,21 +18,46 @@ export default async function handler(req, res) {
     const saju = getSajuFromDate(dob);
     const lacking = getLackingElements(saju);
 
-    const candidates = nameDB.filter(name => {
-      return (
-        (!gender || name.gender === 'neutral' || name.gender === gender) &&
-        (!purpose || name.purpose === purpose) &&
-        lacking.includes(name.element) &&
-        name.lang === lang
-      );
+    const prompt = `
+You are an expert Korean saju-based name generator.
+
+Saju information:
+- Year Pillar: ${saju.year}
+- Month Pillar: ${saju.month}
+- Day Pillar: ${saju.day}
+- Hour Pillar: ${saju.hour}
+- Lacking elements: ${lacking.join(', ')}
+
+User info:
+- Purpose: ${purpose}
+- Gender: ${gender}
+- Desired traits: ${traits || 'N/A'}
+- Output language: ${lang}
+
+Generate 3 appropriate ${lang} names based on this saju and explain the meaning and which element the name complements. Respond in JSON array format like this:
+[
+  {
+    "name": "...",
+    "meaning": "...",
+    "element": "...",
+    "comment": "..."
+  },
+  ...
+]
+    `;
+
+    const chat = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.9
     });
 
-    const shuffled = candidates.sort(() => 0.5 - Math.random());
-    const top3 = shuffled.slice(0, 3);
+    const text = chat.choices?.[0]?.message?.content?.trim();
+    const result = JSON.parse(text);
 
-    res.status(200).json({ result: top3 });
+    res.status(200).json({ result });
   } catch (err) {
-    console.error(err);
+    console.error('[Name Generator Error]', err);
     res.status(500).json({ message: 'Name generation failed' });
   }
 }
