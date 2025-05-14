@@ -1,10 +1,7 @@
 
-// /api/generate-name.js
+// /api/generate-name.js (OpenAI fetch 방식 - no openai package)
 
 import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
-import { OpenAI } from 'openai';
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -45,20 +42,28 @@ Generate 3 appropriate ${lang} names based on this saju and explain the meaning 
   },
   ...
 ]
-    `;
+    `.trim();
 
-    const chat = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.9
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.9
+      })
     });
 
-    const text = chat.choices?.[0]?.message?.content?.trim();
+    const data = await openaiRes.json();
+    const text = data.choices?.[0]?.message?.content?.trim();
     const result = JSON.parse(text);
 
     res.status(200).json({ result });
   } catch (err) {
-    console.error('[Name Generator Error]', err);
-    res.status(500).json({ message: 'Name generation failed' });
+    console.error("[Name Generator Error]", err);
+    res.status(500).json({ message: "Name generation failed" });
   }
 }
