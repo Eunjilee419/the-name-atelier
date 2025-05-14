@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   const missingStr = missing.join(", ");
   const languagePrompt = {
     en: "You are an expert Western naming consultant based on Korean saju (Four Pillars) and sound-element theory. Follow the instructions strictly.",
-    ko: "당신은 한국 사주와 소리오행 이론에 기반한 작명 전문가입니다. 반드시 사람 이름으로 쓰일 수 있는 한국어 이름을 추천하세요. 나무, 태양, 금강처럼 오행 단어 자체는 이름으로 사용하지 마세요.",
+    ko: "당신은 한국 사주와 소리오행 이론에 기반한 작명 전문가입니다. 반드시 실제 사람 이름으로 쓰일 수 있는 한글 이름만 추천하세요. '나무', '폭포' 같은 단어 이름은 금지. 성은 절대 포함하지 말고, 두 글자 이름만 추천하세요.",
     ja: "あなたは韓国の四柱推命と音の五行に基づいた日本語の命名専門家です。以下の指示を厳守してください。",
     zh: "你是结合韩式四柱命理和声音五行理论的中文命名专家，请严格遵循以下规则。"
   }[lang] || languagePrompt["en"];
@@ -50,8 +50,9 @@ Each name must include:
 
 다음 오행에 대해서만 이름을 생성하세요: ${missingStr}.
 다른 오행은 절대 포함하지 마세요.
-반드시 실제 한국인이 사용할 수 있는 이름만 추천하세요.
-예: 나무, 태양, 폭포처럼 오행 단어 자체는 이름으로 쓰지 마세요.
+반드시 실제 한국인이 사용하는 '이름(두 글자만)'만 추천하세요.
+성은 절대 포함하지 마세요.
+'나무', '태양', '폭포' 같은 단어형 이름은 금지합니다.
 각 이름에는 다음이 포함되어야 합니다:
 - 이름 (한글 + 한자)
 - 의미
