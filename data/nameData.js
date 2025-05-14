@@ -131,7 +131,60 @@ const nameDB = [
     lang: "en",
     gender: "male",
     purpose: "personal"
-  }
+  },
+  {
+    name: "晨曦",
+    meaning: {
+      zh: "清晨的阳光，象征希望与新生",
+      en: "Morning light symbolizing hope and rebirth",
+      ko: "아침 햇살처럼 희망과 새로움을 상징",
+      ja: "朝日のように希望と再生を象徴する"
+    },
+    element: "火",
+    lang: "zh",
+    gender: "female",
+    purpose: "personal"
+  },
+  {
+    name: "芷涵",
+    meaning: {
+      zh: "有文雅气质的女子",
+      en: "Graceful and refined woman",
+      ko: "우아하고 품격 있는 여성",
+      ja: "優雅で品のある女性"
+    },
+    element: "水",
+    lang: "zh",
+    gender: "female",
+    purpose: "personal"
+  },
+  {
+    name: "陽菜",
+    meaning: {
+      ja: "太陽のように明るく元気な人",
+      en: "Bright and cheerful like the sun",
+      ko: "태양처럼 밝고 명랑한 사람",
+      zh: "像太阳一样明亮开朗"
+    },
+    element: "火",
+    lang: "ja",
+    gender: "female",
+    purpose: "personal"
+  },
+  {
+    name: "蓮翔",
+    meaning: {
+      ja: "蓮のように清らかで、高く翔る心",
+      en: "Pure like a lotus, aspiring high",
+      ko: "연꽃처럼 맑고 높이 비상하는 마음",
+      zh: "如莲般纯洁，志向高远"
+    },
+    element: "木",
+    lang: "ja",
+    gender: "male",
+    purpose: "personal"
+  },
+
 ];
 
 export default nameDB;
