@@ -12,6 +12,8 @@ export default async function handler(req, res) {
   if (!dob) return res.status(400).json({ message: 'Missing birth date' });
 
   try {
+const phoneticMap = {"木": ["G", "K", "C"], "火": ["N", "D", "R", "L", "T"], "土": ["M", "B", "F", "P"], "金": ["S", "J", "Z", "Ch"], "水": ["H", "I", "E", "O", "U"]};
+
     const saju = getSajuFromDate(dob);
     const lacking = getLackingElements(saju) || [];
     const lackingText = Array.isArray(lacking) ? lacking.join(', ') : 'unknown';
@@ -72,16 +74,6 @@ Respond only with a valid JSON array like this:
 - element: one of 木, 火, 土, 金, 水
 - comment: how the name complements the lacking saju element
 
-You must use the following mapping to determine the phonetic element based on the first sound of the name:
-
-- Wood: G, K, C
-- Fire: N, D, R, L, T
-- Earth: M, B, F, P
-- Metal: S, J, Z, Ch
-- Water: H, I, E, O, U
-
-Always apply this mapping when assigning the 'element' value. Do not infer or guess.
-
 Respond only with a valid JSON array.`}
   {
     "name": "...",
@@ -107,9 +99,15 @@ Respond only with a valid JSON array.`}
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
-      body: JSON.stringify({
+      
+    const letterLimits = lacking.map(e => `- ${e}: ${phoneticMap[e].join(', ')}`).join('\n');
+    const letterRule = `\nYou must generate names that start with the following letters based on the lacking saju elements:\n${letterLimits}\nUse only these starting letters. Do not guess or modify.`;
+
+    const promptWithLetters = `${prompt}\n${letterRule}`;
+
+    body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
+        messages: [{ role: "user", content: promptWithLetters }],
         temperature: 0.9,
         max_tokens: 800
       })
