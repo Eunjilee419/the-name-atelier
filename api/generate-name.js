@@ -6,12 +6,12 @@ export default async function handler(req, res) {
   const { purpose, gender, dob, traits, lang } = req.body;
   const { analyzeSaju } = require('./sajuUtils');
 
-  const filePath = path.join(process.cwd(), 'saju_full_1900_2050.json');
+  const filePath = path.join(process.cwd(), 'saju_full_1940_2030.json');
   const sajuDB = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   const saju = sajuDB[dob];
 
   if (!saju) {
-    return res.status(400).json({ error: 'Invalid date or out of supported range (1900–2050).' });
+    return res.status(400).json({ error: 'Invalid date or out of supported range (1940–2030).' });
   }
 
   const sajuChars = [...saju.년주, ...saju.월주, ...saju.일주];
