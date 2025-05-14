@@ -31,6 +31,10 @@ const phoneticMap = {"木": ["G", "K", "C"], "火": ["N", "D", "R", "L", "T"], "
     }
 
     const prompt = `
+    const letterLimits = lacking.map(e => `- ${e}: ${phoneticMap[e].join(', ')}`).join('\n');
+    const letterRule = "\nYou must generate names that start with the following letters based on the lacking saju elements:\n" + letterLimits + "\nUse only these starting letters. Do not guess or modify.";
+    const promptWithLetters = prompt + letterRule;
+
 You are an expert Korean saju-based name generator.
 
 Saju information:
