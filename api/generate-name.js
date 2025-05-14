@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   const saju = sajuDB[dob];
 
   if (!saju) {
-    return res.status(400).json({ error: 'Invalid date or out of supported range (1920–2030).' });
+    return res.status(400).json({ error: 'Invalid date or out of supported range (1900–2050).' });
   }
 
   const sajuChars = [...saju.년주, ...saju.월주, ...saju.일주];
