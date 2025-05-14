@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { purpose, gender, dob, traits, lang } = req.body;
   const { analyzeSaju } = require('./sajuUtils');
 
-  const filePath = path.join(process.cwd(), 'public', 'saju_full_1920_2030.json');
+  const filePath = path.join(process.cwd(), 'public', 'saju_full_1900_2050.json');
   const sajuDB = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   const saju = sajuDB[dob];
 
