@@ -207,7 +207,15 @@
 
         const data = await res.json();
         document.getElementById("loading").style.display = "none";
-        document.getElementById("results").innerText = data.result || "No result";
+        
+document.getElementById("results").innerHTML = (data.result || []).map(item => {
+  return `<div style='margin-bottom: 16px;'>
+    <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
+    <span style='color:gray;'>💬 ${item.meaning?.[payload.lang] || ''}</span><br/>
+    <span style='font-size: 13px;'>🌿 Element: ${item.element}</span>
+  </div>`;
+}).join('') || "No result";
+
       });
 
       applyTranslations("en");
