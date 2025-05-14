@@ -3,26 +3,15 @@ import fs from 'fs';
 import path from 'path';
 
 export default async function handler(req, res) {
-  const dob = req.body?.dob || req.query?.dob;
-  const { purpose, gender, traits, lang } = req.body;
+  const { purpose, gender, dob, traits, lang } = req.body;
   const { analyzeSaju } = require('./sajuUtils');
 
-  if (!dob) {
-    return res.status(400).json({ error: 'Missing dob parameter.' });
-  }
-
-  const filePath = path.join(process.cwd(), 'saju_full_1900_2050.json');
-  let sajuDB;
-  try {
-    sajuDB = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch (err) {
-    console.error("❌ JSON 파일 읽기 실패:", err);
-    return res.status(500).json({ error: 'Failed to read saju JSON file.' });
-  }
-
+  const filePath = path.join(process.cwd(), 'public', 'saju_full_1900_2050.json');
+  const sajuDB = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   const saju = sajuDB[dob];
+
   if (!saju) {
-    return res.status(400).json({ error: 'Date not found in saju dataset.' });
+    return res.status(400).json({ error: 'Invalid date or out of supported range (1900–2050).' });
   }
 
   const sajuChars = [...saju.년주, ...saju.월주, ...saju.일주];
@@ -50,7 +39,38 @@ Instructions:
 - Generate 3 culturally appropriate English first names only.
 - Do not include Korean names or last names.
 ${baseRule}
-For each name, explain its meaning and how it aligns with the saju.`
+For each name, explain its meaning and how it aligns with the saju.`,
+
+    ja: `あなたは韓国の四柱推命と音の五行に基づく日本語ネーミングの専門家です。
+
+生年月日: ${dob}
+不足している五行: ${missing}
+過剰な五行: ${excessive}
+性別: ${gender}
+希望する特徴: ${traits}
+目的: ${purpose}
+
+指示:
+- 純粋な日本式の名前を3つ提案してください。
+- 各名前は漢字で表記し、意味と音の五行との関連を説明してください。
+- 韓国風の名前や韓国語の読みは使用しないこと。
+- 姓（名字）は含めず、名（下の名前）のみを提案してください。
+${baseRule}`,
+
+    zh: `你是一位结合韩式四柱命理与声音五行理论的中文命名专家。
+
+出生日期: ${dob}
+缺失五行: ${missing}
+过盛五行: ${excessive}
+性别: ${gender}
+特质: ${traits}
+用途: ${purpose}
+
+说明:
+- 请生成3个标准中文名字（仅名），避免使用姓氏。
+- 每个名字需提供汉字、拼音、含义及五行音理逻辑。
+- 禁止使用韩文或韩式风格的名字。
+${baseRule}`
   };
 
   const prompt = prompts[lang] || prompts.en;
@@ -70,15 +90,9 @@ For each name, explain its meaning and how it aligns with the saju.`
     });
 
     const data = await openaiRes.json();
-    console.log("📦 GPT 응답:", JSON.stringify(data, null, 2));
-
     const resultText = data.choices?.[0]?.message?.content || "No result";
-    console.log("📤 최종 결과:", resultText);
-
     res.status(200).json({ result: resultText });
-
   } catch (err) {
-    console.error("❌ GPT 호출 에러:", err);
-    res.status(500).json({ error: "GPT 호출 실패" });
+    res.status(500).json({ error: "API Error" });
   }
 }
