@@ -1,37 +1,42 @@
 
-const heavenlyStems = {
-  갑: 'Wood', 을: 'Wood',
-  병: 'Fire', 정: 'Fire',
-  무: 'Earth', 기: 'Earth',
-  경: 'Metal', 신: 'Metal',
-  임: 'Water', 계: 'Water'
+// sajuUtils.js
+
+import sajuData from './saju_full_1940_2030.json';
+
+const elementMap = {
+  '甲': '木', '乙': '木',
+  '丙': '火', '丁': '火',
+  '戊': '土', '己': '土',
+  '庚': '金', '辛': '金',
+  '壬': '水', '癸': '水',
+  '子': '水', '亥': '水',
+  '寅': '木', '卯': '木',
+  '巳': '火', '午': '火',
+  '申': '金', '酉': '金',
+  '辰': '土', '丑': '土', '未': '土', '戌': '土'
 };
 
-const earthlyBranches = {
-  자: 'Water', 축: 'Earth', 인: 'Wood', 묘: 'Wood',
-  진: 'Earth', 사: 'Fire', 오: 'Fire',
-  미: 'Earth', 신: 'Metal', 유: 'Metal',
-  술: 'Earth', 해: 'Water'
-};
-
-function analyzeSaju(saju) {
-  const counts = { Wood: 0, Fire: 0, Earth: 0, Metal: 0, Water: 0 };
-
-  saju.forEach(char => {
-    if (heavenlyStems[char]) counts[heavenlyStems[char]]++;
-    else if (earthlyBranches[char]) counts[earthlyBranches[char]]++;
-  });
-
-  const zeroElements = Object.entries(counts)
-    .filter(([_, count]) => count === 0)
-    .map(([el]) => el);
-
-  const sorted = Object.entries(counts).sort((a, b) => a[1] - b[1]);
-  const missing = zeroElements.length > 0 ? zeroElements : [sorted[0][0]];
-
-  const excessive = sorted[4][1] - sorted[3][1] > 1 ? sorted[4][0] : null;
-
-  return { counts, missing, excessive };
+// 생년월일 → 사주 기둥 (year/month/day/hour) 반환
+export function getSajuFromDate(dob) {
+  const dateKey = dob.trim(); // yyyy-mm-dd
+  const saju = sajuData[dateKey];
+  if (!saju) throw new Error('Saju data not found for date: ' + dateKey);
+  return saju; // e.g., { year: '甲子', month: '丙寅', day: '戊辰', hour: '庚午' }
 }
 
-module.exports = { analyzeSaju };
+// 부족한 오행 추출
+export function getLackingElements(saju) {
+  const counts = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
+  const pillars = [saju.year, saju.month, saju.day, saju.hour];
+
+  for (const pillar of pillars) {
+    for (const char of pillar) {
+      const el = elementMap[char];
+      if (el) counts[el]++;
+    }
+  }
+
+  return Object.entries(counts)
+    .filter(([_, count]) => count === 0)
+    .map(([el]) => el);
+}
