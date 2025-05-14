@@ -50,8 +50,14 @@ For each name, explain:
 1. The meaning of the name itself
 2. Which saju element it complements and why
 
-Respond only with a valid JSON array like this:
-[
+Each result must be a JSON object with:
+- name: the chosen name
+- meaning: the meaning of the name itself (not related to saju)
+- element: one of 木, 火, 土, 金, 水
+- comment: how the name complements the lacking saju element
+
+Respond only with a valid JSON array.
+
   {
     "name": "...",
     "meaning": "...",
