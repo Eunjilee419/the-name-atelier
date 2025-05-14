@@ -15,9 +15,9 @@ export default async function handler(req, res) {
   }
 
   const sajuChars = [...saju.년주, ...saju.월주, ...saju.일주];
-  const { missing, excessive } = analyzeSaju(sajuChars);
+  const { counts, missing, excessive } = analyzeSaju(sajuChars);
 
-  const baseRule = `Use only initials matching the missing element:
+  const baseRule = `Use only initials matching the missing elements:
 - Wood: G, K, C
 - Fire: N, D, R, L, T
 - Earth: M, B, F, P
@@ -29,7 +29,7 @@ Never use initials of the excessive element.`;
     en: `You're a Western name expert using Korean saju (Four Pillars) and sound-element theory.
 
 Birthdate: ${dob}
-Missing element: ${missing}
+Missing elements: ${missing.join(", ")}
 Excessive element: ${excessive}
 Gender: ${gender}
 Traits: ${traits}
@@ -41,10 +41,25 @@ Instructions:
 ${baseRule}
 For each name, explain its meaning and how it aligns with the saju.`,
 
+    ko: `당신은 한국 사주(四柱命理)와 소리오행 이론에 기반한 작명 전문가입니다.
+
+생년월일: ${dob}
+부족한 오행: ${missing.join(", ")}
+과한 오행: ${excessive}
+성별: ${gender}
+원하는 이미지나 성격: ${traits}
+이름의 용도: ${purpose}
+
+조건:
+- 순수한 한국 이름 3개를 제안하세요.
+- 성은 포함하지 말고 이름(한 글자 또는 두 글자 이름)만 추천하세요.
+- 각 이름은 의미와 사주와의 연결 이유를 설명해주세요.
+${baseRule}`,
+
     ja: `あなたは韓国の四柱推命と音の五行に基づく日本語ネーミングの専門家です。
 
 生年月日: ${dob}
-不足している五行: ${missing}
+不足している五行: ${missing.join(", ")}
 過剰な五行: ${excessive}
 性別: ${gender}
 希望する特徴: ${traits}
@@ -53,14 +68,13 @@ For each name, explain its meaning and how it aligns with the saju.`,
 指示:
 - 純粋な日本式の名前を3つ提案してください。
 - 各名前は漢字で表記し、意味と音の五行との関連を説明してください。
-- 韓国風の名前や韓国語の読みは使用しないこと。
 - 姓（名字）は含めず、名（下の名前）のみを提案してください。
 ${baseRule}`,
 
     zh: `你是一位结合韩式四柱命理与声音五行理论的中文命名专家。
 
 出生日期: ${dob}
-缺失五行: ${missing}
+缺失五行: ${missing.join(", ")}
 过盛五行: ${excessive}
 性别: ${gender}
 特质: ${traits}
@@ -92,7 +106,9 @@ ${baseRule}`
     const data = await openaiRes.json();
     const resultText = data.choices?.[0]?.message?.content || "No result";
     res.status(200).json({ result: resultText });
+
   } catch (err) {
-    res.status(500).json({ error: "API Error" });
+    console.error("❌ GPT 호출 에러:", err);
+    res.status(500).json({ error: "GPT 호출 실패" });
   }
 }
