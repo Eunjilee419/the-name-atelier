@@ -50,8 +50,29 @@ For each name, explain:
 1. The meaning of the name itself
 2. Which saju element it complements and why
 
+${purpose === 'brand' ? `If the purpose is 'brand', generate 3 creative and culturally appropriate brand names (not personal names) in the specified language. Each name must:
+- Reflect the lacking saju element(s)
+- Be easy to pronounce
+- Sound unique and memorable
+- Include a meaning
+- Explain how it relates to the saju
+
 Respond only with a valid JSON array like this:
 [
+  {
+    "name": "...",
+    "meaning": "...",
+    "element": "...",
+    "comment": "..."
+  }
+]
+` : `Each result must be a JSON object with:
+- name: the chosen name
+- meaning: the meaning of the name itself (not related to saju)
+- element: one of 木, 火, 土, 金, 水
+- comment: how the name complements the lacking saju element
+
+Respond only with a valid JSON array.`}
   {
     "name": "...",
     "meaning": "...",
