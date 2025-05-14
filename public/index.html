@@ -195,16 +195,9 @@
         };
 
         document.getElementById("loading").style.display = "block";
-        
-document.getElementById("results").innerHTML = (data.result || []).map(item => {
-  return `<div style='margin-bottom: 16px;'>
-    <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
-    <span style='color:gray;'>💬 ${item.meaning?.[payload.lang] || ''}</span><br/>
-    <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
-    <span style='font-size: 13px;'>🧭 ${item.comment || ''}</span>
-  </div>`;
-}).join('') || "No result";
-const res = await fetch("/api/generate-name", {
+        document.getElementById("results").innerText = "";
+
+        const res = await fetch("/api/generate-name", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -212,18 +205,27 @@ const res = await fetch("/api/generate-name", {
           body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
-        document.getElementById("loading").style.display = "none";
         
-document.getElementById("results").innerHTML = (data.result || []).map(item => {
+const data = await res.json();
+document.getElementById("loading").style.display = "none";
+
+if (!data.result || !Array.isArray(data.result)) {
+  document.getElementById("results").innerHTML = "No result";
+  return;
+}
+
+document.getElementById("results").innerHTML = data.result.map(item => {
   return `<div style='margin-bottom: 16px;'>
     <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
     <span style='color:gray;'>💬 ${item.meaning?.[payload.lang] || ''}</span><br/>
     <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
     <span style='font-size: 13px;'>🧭 ${item.comment || ''}</span>
   </div>`;
-}).join('') || "No result";
-});
+}).join('');
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("results").innerText = data.result || "No result";
+      });
 
       applyTranslations("en");
     </script>
