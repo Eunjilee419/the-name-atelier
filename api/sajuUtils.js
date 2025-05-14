@@ -1,6 +1,4 @@
 
-// sajuUtils.js
-
 const heavenlyStems = {
   갑: 'Wood', 을: 'Wood',
   병: 'Fire', 정: 'Fire',
@@ -16,33 +14,23 @@ const earthlyBranches = {
   술: 'Earth', 해: 'Water'
 };
 
-const elementList = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
-
-function countElements(saju) {
+function analyzeSaju(saju) {
   const counts = { Wood: 0, Fire: 0, Earth: 0, Metal: 0, Water: 0 };
 
   saju.forEach(char => {
-    if (heavenlyStems[char]) {
-      counts[heavenlyStems[char]]++;
-    } else if (earthlyBranches[char]) {
-      counts[earthlyBranches[char]]++;
-    }
+    if (heavenlyStems[char]) counts[heavenlyStems[char]]++;
+    else if (earthlyBranches[char]) counts[earthlyBranches[char]]++;
   });
 
-  return counts;
-}
+  const zeroElements = Object.entries(counts)
+    .filter(([_, count]) => count === 0)
+    .map(([el]) => el);
 
-function getElementBalance(counts) {
   const sorted = Object.entries(counts).sort((a, b) => a[1] - b[1]);
-  const missing = sorted[0][0];
-  const excessive = sorted[4][1] - sorted[3][1] > 1 ? sorted[4][0] : null;
-  return { missing, excessive };
-}
+  const missing = zeroElements.length > 0 ? zeroElements : [sorted[0][0]];
 
-// 예시: 병술, 갑오, 기미 → ['병', '술', '갑', '오', '기', '미']
-function analyzeSaju(sajuChars) {
-  const counts = countElements(sajuChars);
-  const { missing, excessive } = getElementBalance(counts);
+  const excessive = sorted[4][1] - sorted[3][1] > 1 ? sorted[4][0] : null;
+
   return { counts, missing, excessive };
 }
 
