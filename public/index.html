@@ -218,7 +218,7 @@ document.getElementById("results").innerHTML = data.result.map(item => {
   return `<div style='margin-bottom: 16px;'>
     <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
         <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
-    <span style='font-size: 13px;'>💬 ${item.comment || ''} , ${item.meaning?.[payload.lang] ? item.meaning[payload.lang] : ''}</span>
+    <span style='font-size: 13px;'>💬 ${item.comment || ''} ${item.meaning?.[payload.lang] ? item.meaning[payload.lang] : ''}</span>
   </div>`;
 }).join('');
 
