@@ -72,12 +72,15 @@ Respond only with a valid JSON array like this:
 - element: one of 木, 火, 土, 金, 水
 - comment: how the name complements the lacking saju element
 
-Also consider the phonetic element (sound-based energy) of each name. Use this mapping:
+You must use the following mapping to determine the phonetic element based on the first sound of the name:
+
 - Wood: G, K, C
 - Fire: N, D, R, L, T
 - Earth: M, B, F, P
 - Metal: S, J, Z, Ch
 - Water: H, I, E, O, U
+
+Always apply this mapping when assigning the 'element' value. Do not infer or guess.
 
 Respond only with a valid JSON array.`}
   {
