@@ -25,7 +25,9 @@ export default async function handler(req, res) {
     } else if (lang === 'ja') {
       nameStyleInstruction = 'Generate 3 appropriate Japanese given names (名前のみ, no surname).';
     } else {
-      nameStyleInstruction = 'Generate 3 appropriate Korean names in native Hangul. For each Korean name, include the 한자 (Chinese characters), its meaning, and explain how it complements the saju.';
+      nameStyleInstruction = '${purpose === 'brand'
+      ? 'Generate 3 creative Korean brand names in native Hangul without Hanja. Avoid personal names.'
+      : 'Generate 3 appropriate Korean names in native Hangul. For each Korean name, include the 한자 (Chinese characters), its meaning, and explain how it complements the saju.'}';
     }
 
     const prompt = `
