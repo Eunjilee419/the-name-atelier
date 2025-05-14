@@ -1,9 +1,9 @@
 
 // /api/generate-name.js (OpenAI fetch 방식 - no openai package)
 
-const { getSajuFromDate, getLackingElements } = require('../lib/sajuUtils.js');
+import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -12,8 +12,6 @@ module.exports = async function handler(req, res) {
   if (!dob) return res.status(400).json({ message: 'Missing birth date' });
 
   try {
-const phoneticMap = {"木": ["G", "K", "C"], "火": ["N", "D", "R", "L", "T"], "土": ["M", "B", "F", "P"], "金": ["S", "J", "Z", "Ch"], "水": ["H", "I", "E", "O", "U"]};
-
     const saju = getSajuFromDate(dob);
     const lacking = getLackingElements(saju) || [];
     const lackingText = Array.isArray(lacking) ? lacking.join(', ') : 'unknown';
@@ -31,10 +29,6 @@ const phoneticMap = {"木": ["G", "K", "C"], "火": ["N", "D", "R", "L", "T"], "
     }
 
     const prompt = `
-    const letterLimits = lacking.map(e => `- ${e}: ${phoneticMap[e].join(', ')}`).join('\n');
-    const letterRule = "\nYou must generate names that start with the following letters based on the lacking saju elements:\n" + letterLimits + "\nUse only these starting letters. Do not guess or modify.";
-    const promptWithLetters = prompt + letterRule;
-
 You are an expert Korean saju-based name generator.
 
 Saju information:
@@ -103,15 +97,9 @@ Respond only with a valid JSON array.`}
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
-      
-    const letterLimits = lacking.map(e => `- ${e}: ${phoneticMap[e].join(', ')}`).join('\n');
-    const letterRule = `\nYou must generate names that start with the following letters based on the lacking saju elements:\n${letterLimits}\nUse only these starting letters. Do not guess or modify.`;
-
-    const promptWithLetters = `${prompt}\n${letterRule}`;
-
-    body: JSON.stringify({
+      body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: promptWithLetters }],
+        messages: [{ role: "user", content: prompt }],
         temperature: 0.9,
         max_tokens: 800
       })
