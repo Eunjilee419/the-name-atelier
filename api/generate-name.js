@@ -36,13 +36,12 @@ Traits: ${traits}
 Purpose: ${purpose}
 
 Instructions:
-- Generate exactly one name for each of the missing elements above. (e.g. if Water and Metal are missing, generate one name for each = total 2 names)
-- Each name must follow the sound-element rules.
-- Do not include Korean names or last names.
+- Generate exactly one culturally appropriate English given name for each missing element. Do NOT use Korean, Chinese, or Japanese names, or romanized versions.
+- Each name must follow the sound-element initial rules.
 ${baseRule}
 For each name, explain its meaning and how it aligns with the saju.`,
 
-    ko: `당신은 한국 사주(四柱命理)와 소리오행 이론에 기반한 작명 전문가입니다.
+    ko: `당신은 한국 사주(四柱命理)와 소리오행 이론에 기반한 한국어 작명 전문가입니다.
 
 생년월일: ${dob}
 부족한 오행: ${missing.join(", ")}
@@ -52,9 +51,8 @@ For each name, explain its meaning and how it aligns with the saju.`,
 이름의 용도: ${purpose}
 
 조건:
-- 위에 제시된 부족한 오행 각각에 대해 이름을 하나씩 제안하세요. (예: 수와 금이 부족하면 수 이름 1개 + 금 이름 1개 = 총 2개)
-- 모든 이름은 해당 오행에 맞는 초성을 사용해야 합니다.
-- 성은 포함하지 말고 이름(한 글자 또는 두 글자 이름)만 추천하세요.
+- 부족한 오행 각각에 대해 순수한 한국식 이름을 하나씩 추천하세요.
+- 반드시 한글 이름만 생성하세요. 영어식, 중국식, 일본식 이름은 사용 금지입니다.
 ${baseRule}`,
 
     ja: `あなたは韓国の四柱推命と音の五行に基づく日本語ネーミングの専門家です。
@@ -67,9 +65,8 @@ ${baseRule}`,
 目的: ${purpose}
 
 指示:
-- 上記の不足している五行それぞれに対応する名前を1つずつ提案してください。（例：水と金が不足している場合、水に合う名前1つ＋金に合う名前1つ＝合計2つ）
-- 各名前は音の五行ルールに従う必要があります。
-- 姓（名字）は含めず、名（下の名前）のみを提案してください。
+- 不足している五行ごとに、文化的に正しい日本人の名前を1つずつ提案してください。
+- 中国語・韓国語・英語の名前は使用しないでください。
 ${baseRule}`,
 
     zh: `你是一位结合韩式四柱命理与声音五行理论的中文命名专家。
@@ -82,9 +79,8 @@ ${baseRule}`,
 用途: ${purpose}
 
 说明:
-- 请针对每个缺失的五行各生成一个名字。（例如：缺水和金时，请各生成一个名字，共2个）
-- 每个名字都必须遵守声音五行的首字母规则。
-- 请仅生成中文名字，不包括姓氏。
+- 请为每个缺失的五行各生成一个文化上合适的中文名字。
+- 禁止使用韩文、日本文、英文名字或拼音风格的名字。
 ${baseRule}`
   };
 
