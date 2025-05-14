@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     const shuffled = candidates.sort(() => 0.5 - Math.random());
     const topResults = shuffled.slice(0, 3).map(name => ({
       ...name,
-      comment: elementComments[name.element]?.[lang] || ''
+      comment: elementComments[name.element]?.[lang] || ""
     }));
 
     res.status(200).json({ result: topResults });
