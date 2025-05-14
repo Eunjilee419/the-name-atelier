@@ -37,8 +37,8 @@ Purpose: ${purpose}
 
 Instructions:
 - ONLY generate names for the missing elements listed above.
-- DO NOT generate names for elements not listed above.
-- For each missing element, generate ONE culturally appropriate English name.
+- Do NOT generate names for any other elements like Fire, Earth, or Wood unless listed above.
+- For each missing element, generate exactly one culturally appropriate English given name.
 - Each name MUST include:
   • Name
   • Meaning
@@ -56,11 +56,11 @@ ${baseRule}`,
 
 조건:
 - 위에 제시된 부족한 오행 각각에 대해서만 이름을 생성하세요.
-- 목록에 없는 오행에 대한 이름은 생성하지 마세요.
-- 각 이름에 반드시 다음 포함:
-  • 한글+한자 이름
-  • 의미
-  • 오행과의 연결성
+- 다른 오행 이름은 생성하지 마세요.
+- 각 이름에 반드시 아래 항목을 포함하세요:
+  • 이름 (한글 + 한자)
+  • 의미 설명
+  • 왜 이 이름이 해당 오행과 연결되는지
 ${baseRule}`,
 
     ja: `あなたは韓国の四柱推命と音の五行に基づく日本語ネーミングの専門家です。
@@ -73,12 +73,12 @@ ${baseRule}`,
 目的: ${purpose}
 
 指示:
-- 上記の不足している五行に対してのみ名前を提案してください。
-- 記載されていない五行の名前は生成しないこと。
-- 各名前に必ず以下を含めてください：
+- 上記の不足している五行ごとにのみ名前を提案してください。
+- 他の五行に対する名前は生成しないでください。
+- 各名前に以下の情報を必ず含めてください：
   • 漢字表記の名前
   • 意味の説明
-  • 五行との関連性
+  • 五行との関係性
 ${baseRule}`,
 
     zh: `你是一位结合韩式四柱命理与声音五行理论的中文命名专家。
@@ -91,12 +91,12 @@ ${baseRule}`,
 用途: ${purpose}
 
 说明:
-- 仅为缺失五行各生成一个名字。
-- 不要为未列出的五行生成名字。
-- 每个名字必须包含：
+- 只为上方列出的缺失五行各生成一个名字。
+- 不要为其他五行生成名字。
+- 每个名字必须包含以下信息：
   • 中文名字（含汉字）
   • 含义解释
-  • 与该五行的关系
+  • 与该五行的对应关系说明
 ${baseRule}`
   };
 
