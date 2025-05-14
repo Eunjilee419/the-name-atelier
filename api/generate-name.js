@@ -1,8 +1,8 @@
 
 // generate-name.js (Vercel API Function)
 
-import { getSajuFromDate, getLackingElements } from '../../sajuUtils';
-import nameDB from '../../nameData';
+import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
+import nameDB from '../data/nameData.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
