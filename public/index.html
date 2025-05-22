@@ -1,181 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1WX55SWCG1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1WX55SWCG1');
-</script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Name Atelier</title>
-  <meta name="description" content="AI-powered name generator. Generate personal or brand names in English, Korean, Chinese, or Japanese.">
-  <meta name="keywords" content="naming, make name, name generator, name ideas, AI naming, 브랜드 이름, 작명, 英文名, hacer nombre, baby names, startup name ideas, fantasy names, brand name, business name, atelier name, studio name, art studio name, nickname">
- <style>
-  body {
-    background-color: #fffbde;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .container {
-    max-width: 600px;
-    width: 90%;
-    padding: 20px;
-    background-color: #fffef6;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    border-radius: 12px;
-    box-sizing: border-box;
-    margin: 60px auto 0 auto;
-  }
 
-       h1#title {
+  <!-- 사용자님 원본 구글 태그 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1WX55SWCG1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1WX55SWCG1');
+  </script>
+
+  <style>
+    body {
+      background-color: #fffbde;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .container {
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      background-color: #fffef6;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-sizing: border-box;
+      margin: 60px auto 0 auto;
+    }
+    h1#title {
       font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       font-weight: 700;
     }
     label, select, input, button {
       font-size: 16px;
       margin: 8px 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
     }
-    #results, #loading {
+    button {
+      cursor: pointer;
+      background-color: #3c85f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #326fdb;
+    }
+    #loading {
+      color: gray;
+      margin-top: 10px;
+      display: none;
+    }
+    #results {
       margin-top: 20px;
+      font-size: 16px;
+      min-height: 150px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-sizing: border-box;
     }
-  
-  footer {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    text-align: center;
-    font-size: 14px;
-    color: #555;
-  }
-</style>
-
-  <!-- Cookie Consent Script -->
-  <script type="text/javascript" src="/tarteaucitron.js"></script>
-  <script type="text/javascript">
-    var tarteaucitronForceLanguage = "en";
-  </script>
-  
+    .name-item {
+      margin-bottom: 15px;
+    }
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      box-sizing: border-box;
+    }
+  </style>
   <link rel="icon" type="image/x-icon" href="/taegeuk_favicon.ico">
-  
-  <meta property="og:title" content="The Name Atelier – AI-powered Name Generator">
-<meta property="og:description" content="Discover meaningful names through Korean Saju and AI.">
-<meta property="og:image" content="https://thenameatelier.org/og-thumbnail.jpg">
-<meta property="og:url" content="https://thenameatelier.org">
-<meta property="og:type" content="website">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="The Name Atelier – AI-powered Name Generator">
-<meta name="twitter:description" content="Discover meaningful names through Korean Saju and AI.">
-<meta name="twitter:image" content="https://thenameatelier.org/og-thumbnail.jpg">
-
 </head>
 <body>
-
-    <div class="page-wrapper">
+  <div class="page-wrapper">
     <div class="container">
-  
-    <h1 id="title">The Name Atelier</h1>
-    <p style="font-size: 14px; color: gray; margin-top: -10px;">
-      Powered by AI & Korean Saju (Four Pillars). This is more than a name generator.
-    </p>
-    <p style="margin-top: 10px;">
-     <a href="/what-is-saju.html" style="text-decoration: none; padding: 8px 14px; background-color: #333; color: white; border-radius: 8px; font-size: 14px; margin-right: 10px;">🔍 Learn: What is Saju?</a>
-      <a href="/blog/" style="text-decoration: none; padding: 8px 14px; background-color: #222; color: white; border-radius: 8px; font-size: 14px;">📝 Visit Blog</a>
-    </p>
+      <h1 id="title">The Name Atelier</h1>
+      <p style="font-size: 14px; color: gray; margin-top: -10px;">
+        Powered by AI & Korean Saju (Four Pillars). This is more than a name generator.
+      </p>
+      <p style="margin-top: 10px;">
+        <a href="/what-is-saju.html" style="text-decoration: none; padding: 8px 14px; background-color: #333; color: white; border-radius: 8px; font-size: 14px; margin-right: 10px;">🔍 Learn: What is Saju?</a>
+        <a href="/blog/" style="text-decoration: none; padding: 8px 14px; background-color: #222; color: white; border-radius: 8px; font-size: 14px;">📝 Visit Blog</a>
+      </p>
 
-    <label for="langSelect">🌐 Language:
-      <select id="langSelect">
-        <option value="en">English</option>
-        <option value="ko">한국어</option>
-        <option value="zh">中文</option>
-        <option value="ja">日本語</option>
-      </select>
-    </label><br><br>
-
-    <form id="nameForm">
-      <label id="lblPurpose">Purpose:
-        <select name="purpose">
-          <option value="personal">Personal Name</option>
-          <option value="brand">Brand Name</option>
+      <label for="langSelect">🌐 Language:
+        <select id="langSelect">
+          <option value="en">English</option>
+          <option value="ko">한국어</option>
+          <option value="zh">中文</option>
+          <option value="ja">日本語</option>
         </select>
-      </label><br>
-      <label id="lblGender">Gender:
-        <select name="gender">
-          <option value="female">Female</option>
-          <option value="male">Male</option>
-          <option value="neutral">Neutral</option>
-        </select>
-      </label><br>
-      <label id="lblDOB">Date of Birth: <input type="date" name="dob"></label><br>
-      <label id="lblTraits">Desired Image/Traits: <input type="text" name="traits" placeholder=""></label><br>
-      <button type="submit" id="btnGenerate">Generate Name</button>
-    </form>
+      </label><br><br>
 
-    <div id="loading" style="display:none; color:gray;">⏳ Loading...</div>
-    <div id="results"></div>
+      <form id="nameForm">
+        <label id="lblPurpose">Purpose:
+          <select name="purpose">
+            <option value="personal">Personal Name</option>
+            <option value="brand">Brand Name</option>
+          </select>
+        </label><br>
+        <label id="lblGender">Gender:
+          <select name="gender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="neutral">Neutral</option>
+          </select>
+        </label><br>
+        <label id="lblDOB">Date of Birth: <input type="date" name="dob"></label><br>
+        <label id="lblTraits">Desired Image/Traits: <input type="text" name="traits" placeholder=""></label><br>
+        <button type="submit" id="btnGenerate">Generate Name</button>
+      </form>
+
+      <div id="loading">⏳ Loading...</div>
+      <div id="results"></div>
+    </div>
 
     <script>
-      const translations = {
-        en: {
-          title: "The Name Atelier",
-          lblPurpose: "Purpose:",
-          lblGender: "Gender:",
-          lblDOB: "Date of Birth:",
-          lblTraits: "Desired Image/Traits:",
-          btnGenerate: "Generate Name"
-        },
-        ko: {
-          title: "더 네임 아틀리에",
-          lblPurpose: "이름 용도:",
-          lblGender: "성별:",
-          lblDOB: "생년월일:",
-          lblTraits: "희망 이미지/특성:",
-          btnGenerate: "이름 생성"
-        },
-        zh: {
-          title: "命名工坊",
-          lblPurpose: "用途:",
-          lblGender: "性别:",
-          lblDOB: "出生日期:",
-          lblTraits: "期望形象/特质:",
-          btnGenerate: "生成名字"
-        },
-        ja: {
-          title: "ネームアトリエ",
-          lblPurpose: "名前の目的:",
-          lblGender: "性別:",
-          lblDOB: "生年月日:",
-          lblTraits: "希望する印象や特徴:",
-          btnGenerate: "名前を生成"
-        }
-      };
+      document.getElementById('loading').style.display = 'none';
 
-      function applyTranslations(lang) {
-        const t = translations[lang];
-        document.getElementById("title").innerText = t.title;
-        document.getElementById("lblPurpose").childNodes[0].nodeValue = t.lblPurpose;
-        document.getElementById("lblGender").childNodes[0].nodeValue = t.lblGender;
-        document.getElementById("lblDOB").childNodes[0].nodeValue = t.lblDOB;
-        document.getElementById("lblTraits").childNodes[0].nodeValue = t.lblTraits;
-        document.getElementById("btnGenerate").innerText = t.btnGenerate;
-      }
-
-      document.getElementById("langSelect").addEventListener("change", function(e) {
-        const selectedLang = e.target.value;
-        applyTranslations(selectedLang);
-        document.documentElement.lang = selectedLang;
-      });
-
-      document.getElementById("nameForm").addEventListener("submit", async function(e) {
+      document.getElementById('nameForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         if (typeof gtag === "function") {
@@ -191,114 +149,69 @@
           gender: form.gender.value,
           dob: form.dob.value,
           traits: form.traits.value,
-          lang: document.getElementById("langSelect").value
+          lang: document.getElementById('langSelect').value
         };
 
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("results").innerText = "";
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('results').innerText = '';
 
-        const res = await fetch("/api/generate-name", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
+        try {
+          const res = await fetch('/api/generate-name', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
 
-        const data = await res.json();
-        document.getElementById("loading").style.display = "none";
+          const data = await res.json();
+          document.getElementById('loading').style.display = 'none';
 
-        if (!data.result || !Array.isArray(data.result)) {
-          document.getElementById("results").innerHTML = "No result";
-          return;
+          if (!data.result || !Array.isArray(data.result)) {
+            document.getElementById('results').innerHTML = 'No result';
+            return;
+          }
+
+          document.getElementById('results').innerHTML = data.result.map(item => {
+            return `<div style='margin-bottom: 16px;'>
+              <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
+              <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
+              <span style='font-size: 13px;'>💬 ${item.meaning}</span>
+            </div>`;
+          }).join('');
+
+        } catch(err) {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('results').innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
         }
-
-        document.getElementById("results").innerHTML = data.result.map(item => {
-          return `<div style='margin-bottom: 16px;'>
-            <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
-            <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
-            <span style='font-size: 13px;'>💬 ${item.meaning}</span>
-          </div>`;
-        }).join('');
-
-        document.getElementById("loading").style.display = "none";
       });
-
-      applyTranslations("en");
     </script>
   </div>
 
-  <script type="text/javascript">
-    tarteaucitron.init({
-      "privacyUrl": "",
-      "orientation": "bottom",
-      "showAlertSmall": true,
-      "AcceptAllCta": true,
-      "highPrivacy": true,
-      "handleBrowserDNTRequest": false
-    });
-  </script>
-      </div>
+  <footer style="width: 100%; padding: 20px 0; background-color: transparent; text-align: center; font-size: 14px; color: #555; box-sizing: border-box;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border-radius: 12px;">
+      <p>
+        <a href="/about.html" style="margin: 0 10px; text-decoration: none; color: #555;">About</a> |
+        <a href="/contact.html" style="margin: 0 10px; text-decoration: none; color: #555;">Contact</a> |
+        <a href="/privacy.html" style="margin: 0 10px; text-decoration: none; color: #555;">Privacy Policy</a> |
+        <a href="/terms.html" style="margin: 0 10px; text-decoration: none; color: #555;">Terms of Service</a>
+      </p>
+      <p style="margin-top: 10px;">© 2025 The Name Atelier</p>
+    </div>
 
-<footer style="width: 100%; padding: 20px 0; background-color: transparent; text-align: center; font-size: 14px; color: #555; box-sizing: border-box;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border-radius: 12px;">
-    <p>
-      <a href="/about.html" style="margin: 0 10px; text-decoration: none; color: #555;">About</a> |
-      <a href="/contact.html" style="margin: 0 10px; text-decoration: none; color: #555;">Contact</a> |
-      <a href="/privacy.html" style="margin: 0 10px; text-decoration: none; color: #555;">Privacy Policy</a> |
-      <a href="/terms.html" style="margin: 0 10px; text-decoration: none; color: #555;">Terms of Service</a>
-    </p>
-    <p style="margin-top: 10px;">© 2025 The Name Atelier</p>
-  </div>
+    <!-- AdSense Placeholder -->
+    <div style="margin: 40px 0;">
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-client="ca-pub-6497406288752051"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </footer>
 
-<!-- AdSense Placeholder -->
-<div style="margin: 40px 0;">
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
-       data-ad-client="ca-pub-6497406288752051"
-       data-ad-slot="1234567890"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-
-</footer>
-<script>
-document.getElementById('nameForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  let dob = this.dob.value;
-  dob = dob.replace(/\./g, '-').replace(/\s/g, '');
-
-  if (!dob) {
-    alert('날짜를 정확히 입력해주세요.');
-    return;
-  }
-
-  let purpose = this.purpose.value;
-  let gender = this.gender.value;
-  let traits = this.traits.value;
-  let lang = 'en'; // 필요시 원하는 언어로 변경하세요.
-
-  fetch('/api/generate-name', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dob, purpose, gender, traits, lang })
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('이름 생성 결과:', data);
-    alert('이름 생성 완료! 결과는 콘솔에서 확인하세요.');
-    // 여기에 결과를 페이지에 보여주는 코드를 추가하세요.
-  })
-  .catch(err => {
-    alert('오류 발생: ' + err.message);
-  });
-});
-</script>
-
-  
-  
 </body>
 </html>
