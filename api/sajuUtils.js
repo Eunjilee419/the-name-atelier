@@ -1,4 +1,5 @@
-const { Lunar } = require('lunar-javascript');
+const Lunar = require('../data/lunar.js');
+
 
 const elementMap = {
   '甲': '木', '乙': '木',
