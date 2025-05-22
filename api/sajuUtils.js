@@ -18,6 +18,8 @@ function getSajuFromDate(dob) {
   const [year, month, day] = dob.split('-').map(Number);
   const lunar = Lunar.fromYmd(year, month, day);
 
+   console.log('Lunar object:', lunar);  // 여기서 확인
+
   return {
     year: lunar.getYearInGanZhi ? lunar.getYearInGanZhi() : lunar.yearInGanZhi(),
     month: lunar.getMonthInGanZhi ? lunar.getMonthInGanZhi() : lunar.monthInGanZhi(),
