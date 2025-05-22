@@ -1,4 +1,5 @@
-const Lunar = require('../data/lunar.js');
+const lunarModule = require('../data/lunar.js');
+const Lunar = lunarModule.Lunar;
 
 
 const elementMap = {
