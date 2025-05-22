@@ -265,6 +265,23 @@
 </div>
 
 </footer>
+
+<script>
+document.getElementById('nameForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  let dob = this.dob.value;
+  dob = dob.replace(/\./g, '-').replace(/\s/g, '');
+
+  if (!dob) {
+    alert('Please enter a valid date of birth.');
+    return;
+  }
+
+  // 여기에 API 호출 로직 추가하거나 기존 호출 함수 호출
+  console.log('Clean DOB:', dob);
+});
+</script>
+
   
 </body>
 </html>
