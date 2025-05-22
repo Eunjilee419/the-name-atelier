@@ -1,7 +1,6 @@
 // generate-name.js
 import { getSajuFromDate, getLackingElements } from './sajuUtils.js';
 
-// 오행별 알파벳 규칙
 const phoneticMap = {
   '木': ['G', 'K', 'C'],
   '火': ['N', 'D', 'R', 'L', 'T'],
@@ -10,43 +9,33 @@ const phoneticMap = {
   '水': ['H', 'I', 'E', 'O', 'U']
 };
 
-// 언어별 프롬프트
 const prompts = {
   en: (letters, traits, gender, purpose) => `
 You are an expert baby/brand name generator.
 Generate 3 unique English ${purpose === 'personal' ? 'given' : 'brand'} names for a ${gender} using only these starting letters: ${letters.join(', ')}.
-Names must be typical native English names (do NOT generate Korean/Chinese/Japanese names or mixed names like Seo Yoon, Hiroshi, Chen).
+Names must be typical native English names (do NOT generate Korean/Chinese/Japanese names or mixed names like Seo Yoon, Hiroshi, Chen, etc).
 For each name, provide:
 - Name (capitalize as in real English names)
 - Short meaning, reflecting these desired traits: "${traits}" (meaning/explanation in English)
-
-Do NOT include explanations in any other language.
+Format: Name: meaning
+Return nothing if no valid names are possible.
 Do NOT generate names with other starting letters.
-List format only.
 `,
   ko: (letters, traits, gender, purpose) => `
 당신은 전문 작명가입니다.
 아래 시작 알파벳(${letters.join(', ')})만 사용해서 한국식 ${purpose === 'personal' ? '이름' : '브랜드명'} 3개를 추천하세요.
 이름은 반드시 전형적인 한국 이름(예: 지훈, 민서, 하늘 등)이어야 하며, 영어식, 일본식, 중국식, 합성(Seo Yoon, Hiroshi 등) 금지.
 각 이름 옆에 "${traits}"(이/가 드러나는 뜻풀이/설명)도 반드시 한국어로 1~2줄로 써주세요.
-
-다른 언어, 다른 알파벳 이름 금지.  
-포맷:  
-이름: 의미  
-이름: 의미  
-이름: 의미
+포맷: 이름: 의미
+다른 알파벳/다른 언어/합성 이름 금지. 불가능하면 아무것도 출력하지 마세요.
 `,
   zh: (letters, traits, gender, purpose) => `
 你是一名专业起名师。
 请只用以下首字母(${letters.join(', ')})，为${gender === 'male' ? '男性' : gender === 'female' ? '女性' : '中性'}${purpose === 'personal' ? '取三个中文名字' : '生成三个中文品牌名'}。
 名字必须是正统中文名（不要出现韩/日/英式名字或混合名如Seo Yoon、Hiroshi、Minji等）。
 每个名字后面用中文写一句体现“${traits}”的寓意/解释。
-
-禁止其他字母、其他语言、其他风格。
-格式：
-名字：寓意
-名字：寓意
-名字：寓意
+格式：名字：寓意
+如无可用姓名，请什么都不要输出。
 `,
   ja: (letters, traits, gender, purpose) => `
 あなたはプロの名付け師です。
@@ -54,12 +43,8 @@ List format only.
 必ず典型的な日本人の名前（例：ひろき、さゆり、たくやなど）にしてください。
 韓国・中国・英語式・混合名（Seo Yoon、Hiroshi、Minjiなど）は絶対に禁止。
 それぞれの名前の後に、「${traits}」が伝わる意味・由来を日本語で1〜2文で書いてください。
-
-他の言語や他の頭文字の名前は禁止。
-フォーマット：
-名前：意味
-名前：意味
-名前：意味
+フォーマット：名前：意味
+該当がなければ何も返さないでください。
 `
 };
 
@@ -92,7 +77,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.75
+        temperature: 0.7
       })
     });
 
@@ -115,7 +100,12 @@ export default async function handler(req, res) {
         ).join(', '),
         meaning: meaningArr.join(':').trim()
       };
-    }).filter(item => item.name);
+    }).filter(item => item.name && item.meaning);
+
+    // 결과 없으면 안내
+    if (!result.length) {
+      return res.json({ result: [{ name: '', element: '', meaning: '조건에 맞는 이름이 없습니다.' }] });
+    }
 
     res.status(200).json({ result });
   } catch (err) {
