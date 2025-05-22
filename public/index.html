@@ -205,25 +205,23 @@
           body: JSON.stringify(payload)
         });
 
-        
-const data = await res.json();
-document.getElementById("loading").style.display = "none";
+        const data = await res.json();
+        document.getElementById("loading").style.display = "none";
 
-if (!data.result || !Array.isArray(data.result)) {
-  document.getElementById("results").innerHTML = "No result";
-  return;
-}
+        if (!data.result || !Array.isArray(data.result)) {
+          document.getElementById("results").innerHTML = "No result";
+          return;
+        }
 
-document.getElementById("results").innerHTML = data.result.map(item => {
-  return `<div style='margin-bottom: 16px;'>
-    <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
-        <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
-    <span style='font-size: 13px;'>💬 ${item.comment || ''} ${item.meaning?.[payload.lang] ? item.meaning[payload.lang] : ''}</span>
-  </div>`;
-}).join('');
+        document.getElementById("results").innerHTML = data.result.map(item => {
+          return `<div style='margin-bottom: 16px;'>
+            <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
+            <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
+            <span style='font-size: 13px;'>💬 ${item.meaning}</span>
+          </div>`;
+        }).join('');
 
         document.getElementById("loading").style.display = "none";
-        
       });
 
       applyTranslations("en");
@@ -267,12 +265,6 @@ document.getElementById("results").innerHTML = data.result.map(item => {
 </div>
 
 </footer>
-
-
-
   
 </body>
 </html>
-
-
-
