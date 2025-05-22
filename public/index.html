@@ -265,7 +265,6 @@
 </div>
 
 </footer>
-
 <script>
 document.getElementById('nameForm').addEventListener('submit', function(event) {
   event.preventDefault();
@@ -273,15 +272,33 @@ document.getElementById('nameForm').addEventListener('submit', function(event) {
   dob = dob.replace(/\./g, '-').replace(/\s/g, '');
 
   if (!dob) {
-    alert('Please enter a valid date of birth.');
+    alert('날짜를 정확히 입력해주세요.');
     return;
   }
 
-  // 여기에 API 호출 로직 추가하거나 기존 호출 함수 호출
-  console.log('Clean DOB:', dob);
+  let purpose = this.purpose.value;
+  let gender = this.gender.value;
+  let traits = this.traits.value;
+  let lang = 'en'; // 필요시 원하는 언어로 변경하세요.
+
+  fetch('/api/generate-name', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dob, purpose, gender, traits, lang })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('이름 생성 결과:', data);
+    alert('이름 생성 완료! 결과는 콘솔에서 확인하세요.');
+    // 여기에 결과를 페이지에 보여주는 코드를 추가하세요.
+  })
+  .catch(err => {
+    alert('오류 발생: ' + err.message);
+  });
 });
 </script>
 
+  
   
 </body>
 </html>
