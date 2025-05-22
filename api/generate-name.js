@@ -1,117 +1,124 @@
+// generate-name.js
+import { getSajuFromDate, getLackingElements } from './sajuUtils.js';
 
-// /api/generate-name.js (OpenAI fetch 방식 - no openai package)
+// 오행별 알파벳 규칙
+const phoneticMap = {
+  '木': ['G', 'K', 'C'],
+  '火': ['N', 'D', 'R', 'L', 'T'],
+  '土': ['M', 'B', 'F', 'P'],
+  '金': ['S', 'J', 'Z', 'Ch'],
+  '水': ['H', 'I', 'E', 'O', 'U']
+};
 
-import { getSajuFromDate, getLackingElements } from '../lib/sajuUtils.js';
+// 언어별 프롬프트
+const prompts = {
+  en: (letters, traits, gender, purpose) => `
+You are an expert baby/brand name generator.
+Generate 3 unique English ${purpose === 'personal' ? 'given' : 'brand'} names for a ${gender} using only these starting letters: ${letters.join(', ')}.
+Names must be typical native English names (do NOT generate Korean/Chinese/Japanese names or mixed names like Seo Yoon, Hiroshi, Chen).
+For each name, provide:
+- Name (capitalize as in real English names)
+- Short meaning, reflecting these desired traits: "${traits}" (meaning/explanation in English)
+
+Do NOT include explanations in any other language.
+Do NOT generate names with other starting letters.
+List format only.
+`,
+  ko: (letters, traits, gender, purpose) => `
+당신은 전문 작명가입니다.
+아래 시작 알파벳(${letters.join(', ')})만 사용해서 한국식 ${purpose === 'personal' ? '이름' : '브랜드명'} 3개를 추천하세요.
+이름은 반드시 전형적인 한국 이름(예: 지훈, 민서, 하늘 등)이어야 하며, 영어식, 일본식, 중국식, 합성(Seo Yoon, Hiroshi 등) 금지.
+각 이름 옆에 "${traits}"(이/가 드러나는 뜻풀이/설명)도 반드시 한국어로 1~2줄로 써주세요.
+
+다른 언어, 다른 알파벳 이름 금지.  
+포맷:  
+이름: 의미  
+이름: 의미  
+이름: 의미
+`,
+  zh: (letters, traits, gender, purpose) => `
+你是一名专业起名师。
+请只用以下首字母(${letters.join(', ')})，为${gender === 'male' ? '男性' : gender === 'female' ? '女性' : '中性'}${purpose === 'personal' ? '取三个中文名字' : '生成三个中文品牌名'}。
+名字必须是正统中文名（不要出现韩/日/英式名字或混合名如Seo Yoon、Hiroshi、Minji等）。
+每个名字后面用中文写一句体现“${traits}”的寓意/解释。
+
+禁止其他字母、其他语言、其他风格。
+格式：
+名字：寓意
+名字：寓意
+名字：寓意
+`,
+  ja: (letters, traits, gender, purpose) => `
+あなたはプロの名付け師です。
+以下の頭文字(${letters.join(', ')})で始まる日本語の${purpose === 'personal' ? '人名' : 'ブランド名'}を3つ考えてください。
+必ず典型的な日本人の名前（例：ひろき、さゆり、たくやなど）にしてください。
+韓国・中国・英語式・混合名（Seo Yoon、Hiroshi、Minjiなど）は絶対に禁止。
+それぞれの名前の後に、「${traits}」が伝わる意味・由来を日本語で1〜2文で書いてください。
+
+他の言語や他の頭文字の名前は禁止。
+フォーマット：
+名前：意味
+名前：意味
+名前：意味
+`
+};
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  const { dob, lang = 'en', gender = 'neutral', traits = '', purpose = 'personal' } = req.body;
-  if (!dob) return res.status(400).json({ message: 'Missing birth date' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   try {
+    const { dob, lang, gender, purpose, traits } = req.body;
+
+    // 1. 사주 추출
     const saju = getSajuFromDate(dob);
-    const lacking = getLackingElements(saju) || [];
-    const lackingText = Array.isArray(lacking) ? lacking.join(', ') : 'unknown';
-
-    // 언어별 지시 보완
-    let nameStyleInstruction = '';
-    if (lang === 'en') {
-      nameStyleInstruction = 'Generate 3 culturally appropriate modern English first names (not Korean romanizations).';
-    } else if (lang === 'zh') {
-      nameStyleInstruction = 'Generate 3 appropriate Chinese given names (no surname).';
-    } else if (lang === 'ja') {
-      nameStyleInstruction = 'Generate 3 appropriate Japanese given names (名前のみ, no surname).';
-    } else {
-      nameStyleInstruction = 'Generate 3 appropriate Korean names in native Hangul. For each Korean name, include the 한자 (Chinese characters), its meaning, and explain how it complements the saju.';
+    // 2. 부족 오행 계산
+    const lacking = getLackingElements(saju);
+    if (!lacking.length) {
+      return res.json({ result: [{ name: '', element: '', meaning: '오행이 모두 균형입니다. 추가 추천이 어렵습니다.' }] });
     }
+    // 3. 오행 알파벳 변환
+    const allowedLetters = lacking.flatMap(e => phoneticMap[e]).filter(Boolean);
 
-    const prompt = `
-You are an expert Korean saju-based name generator.
+    // 4. GPT 프롬프트 생성
+    const prompt = prompts[lang](allowedLetters, traits, gender, purpose);
 
-Saju information:
-- Year Pillar: ${saju.year}
-- Month Pillar: ${saju.month}
-- Day Pillar: ${saju.day}
-- Hour Pillar: ${saju.hour}
-- Lacking elements: ${lackingText}
-
-User info:
-- Purpose: ${purpose}
-- Gender: ${gender}
-- Desired traits: ${traits || 'N/A'}
-- Output language: ${lang}
-
-${nameStyleInstruction}
-For each name, explain its meaning and which element it complements.
-For each name, explain:
-1. The meaning of the name itself
-2. Which saju element it complements and why
-
-${purpose === 'brand' ? `If the purpose is 'brand', generate 3 creative and culturally appropriate brand names (not personal names) in the specified language. Each name must:
-- Reflect the lacking saju element(s)
-- Be easy to pronounce
-- Sound unique and memorable
-- Include a meaning
-- Explain how it relates to the saju
-
-Respond only with a valid JSON array like this:
-[
-  {
-    "name": "...",
-    "meaning": "...",
-    "element": "...",
-    "comment": "..."
-  }
-]
-` : `Each result must be a JSON object with:
-- name: the chosen name
-- meaning: the meaning of the name itself (not related to saju)
-- element: one of 木, 火, 土, 金, 水
-- comment: how the name complements the lacking saju element
-
-Respond only with a valid JSON array.`}
-  {
-    "name": "...",
-    "meaning": "...",
-    "element": "...",
-    "comment": "..."
-  }
-]
-
-  {
-    "name": "...",
-    "meaning": "...",
-    "element": "...",
-    "comment": "..."
-  },
-  ...
-]
-    `.trim();
-
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+    // 5. OpenAI API 호출 (GPT-3.5 Turbo)
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.9,
-        max_tokens: 800
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.75
       })
     });
 
-    const data = await openaiRes.json();
-    const text = data.choices?.[0]?.message?.content?.trim();
-    const result = JSON.parse(text);
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content ?? '';
+
+    // 6. 결과 파싱
+    // 줄 단위로 "이름: 의미" 형식 파싱
+    const lines = text.split('\n').filter(x => x.trim());
+    const result = lines.map(line => {
+      const [name, ...meaningArr] = line.replace(/^[-•\d.\s]*/, '').split(/[:：-]/);
+      return {
+        name: name.trim(),
+        element: lacking.map(e =>
+          e === '木' ? 'Wood' :
+          e === '火' ? 'Fire' :
+          e === '土' ? 'Earth' :
+          e === '金' ? 'Metal' :
+          e === '水' ? 'Water' : e
+        ).join(', '),
+        meaning: meaningArr.join(':').trim()
+      };
+    }).filter(item => item.name);
 
     res.status(200).json({ result });
   } catch (err) {
-    console.error("[Name Generator Error]", err);
-    res.status(500).json({ message: "Name generation failed" });
+    res.status(500).json({ error: err.message });
   }
 }
