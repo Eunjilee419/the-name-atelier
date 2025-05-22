@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>The Name Atelier</title>
 
-  <!-- 사용자님 원본 구글 태그 -->
+  <!-- 기존 구글 태그 코드 유지 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1WX55SWCG1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -14,6 +14,7 @@
   </script>
 
   <style>
+    /* 기존 스타일 유지 */
     body {
       background-color: #fffbde;
       font-family: Arial, sans-serif;
@@ -34,6 +35,7 @@
       box-sizing: border-box;
       margin: 60px auto 0 auto;
     }
+
     h1#title {
       font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       font-weight: 700;
@@ -41,38 +43,9 @@
     label, select, input, button {
       font-size: 16px;
       margin: 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-      padding: 8px 10px;
     }
-    button {
-      cursor: pointer;
-      background-color: #3c85f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #326fdb;
-    }
-    #loading {
-      color: gray;
-      margin-top: 10px;
-      display: none;
-    }
-    #results {
+    #results, #loading {
       margin-top: 20px;
-      font-size: 16px;
-      min-height: 150px;
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 8px;
-      box-sizing: border-box;
-    }
-    .name-item {
-      margin-bottom: 15px;
     }
     footer {
       margin-top: 40px;
@@ -81,20 +54,23 @@
       text-align: center;
       font-size: 14px;
       color: #555;
-      box-sizing: border-box;
     }
   </style>
+
   <link rel="icon" type="image/x-icon" href="/taegeuk_favicon.ico">
+
 </head>
 <body>
+
   <div class="page-wrapper">
     <div class="container">
+
       <h1 id="title">The Name Atelier</h1>
       <p style="font-size: 14px; color: gray; margin-top: -10px;">
         Powered by AI & Korean Saju (Four Pillars). This is more than a name generator.
       </p>
       <p style="margin-top: 10px;">
-        <a href="/what-is-saju.html" style="text-decoration: none; padding: 8px 14px; background-color: #333; color: white; border-radius: 8px; font-size: 14px; margin-right: 10px;">🔍 Learn: What is Saju?</a>
+       <a href="/what-is-saju.html" style="text-decoration: none; padding: 8px 14px; background-color: #333; color: white; border-radius: 8px; font-size: 14px; margin-right: 10px;">🔍 Learn: What is Saju?</a>
         <a href="/blog/" style="text-decoration: none; padding: 8px 14px; background-color: #222; color: white; border-radius: 8px; font-size: 14px;">📝 Visit Blog</a>
       </p>
 
@@ -126,66 +102,10 @@
         <button type="submit" id="btnGenerate">Generate Name</button>
       </form>
 
-      <div id="loading">⏳ Loading...</div>
+      <div id="loading" style="display:none; color:gray;">⏳ Loading...</div>
       <div id="results"></div>
+
     </div>
-
-    <script>
-      document.getElementById('loading').style.display = 'none';
-
-      document.getElementById('nameForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        if (typeof gtag === "function") {
-          gtag('event', 'generate_click', {
-            'event_category': 'Name Generator',
-            'event_label': 'Generate Button'
-          });
-        }
-
-        const form = e.target;
-        const payload = {
-          purpose: form.purpose.value,
-          gender: form.gender.value,
-          dob: form.dob.value,
-          traits: form.traits.value,
-          lang: document.getElementById('langSelect').value
-        };
-
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('results').innerText = '';
-
-        try {
-          const res = await fetch('/api/generate-name', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-
-          const data = await res.json();
-          document.getElementById('loading').style.display = 'none';
-
-          if (!data.result || !Array.isArray(data.result)) {
-            document.getElementById('results').innerHTML = 'No result';
-            return;
-          }
-
-          document.getElementById('results').innerHTML = data.result.map(item => {
-            return `<div style='margin-bottom: 16px;'>
-              <strong style='font-size:18px;'>🔤 ${item.name}</strong><br/>
-              <span style='font-size: 13px;'>🌿 Element: ${item.element}</span><br/>
-              <span style='font-size: 13px;'>💬 ${item.meaning}</span>
-            </div>`;
-          }).join('');
-
-        } catch(err) {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('results').innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
-        }
-      });
-    </script>
   </div>
 
   <footer style="width: 100%; padding: 20px 0; background-color: transparent; text-align: center; font-size: 14px; color: #555; box-sizing: border-box;">
@@ -211,7 +131,60 @@
            (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
+
   </footer>
+
+  <script>
+    document.getElementById('nameForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      let dob = this.dob.value;
+      dob = dob.replace(/\./g, '-').replace(/\s/g, '');
+
+      if (!dob) {
+        alert('날짜를 정확히 입력해주세요.');
+        return;
+      }
+
+      let purpose = this.purpose.value;
+      let gender = this.gender.value;
+      let traits = this.traits.value;
+      let lang = document.getElementById('langSelect').value || 'en';
+
+      const resultDiv = document.getElementById('results');
+      const loadingDiv = document.getElementById('loading');
+
+      loadingDiv.style.display = 'block';
+      resultDiv.innerHTML = '';
+
+      fetch('/api/generate-name', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dob, purpose, gender, traits, lang })
+      })
+      .then(response => response.json())
+      .then(data => {
+        loadingDiv.style.display = 'none';
+
+        if (!data.result || data.result.length === 0) {
+          resultDiv.innerHTML = '<p>조건에 맞는 이름이 없습니다.</p>';
+          return;
+        }
+
+        resultDiv.innerHTML = data.result.map(item =>
+          `<div class="name-item">
+            <strong>🔤 ${item.name}</strong><br/>
+            <span>🌿 Element: ${item.element}</span><br/>
+            <span>💬 ${item.meaning}</span>
+          </div>`
+        ).join('');
+      })
+      .catch(err => {
+        loadingDiv.style.display = 'none';
+        resultDiv.innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
+      });
+    });
+  </script>
 
 </body>
 </html>
+
