@@ -1,3 +1,6 @@
+// 파일 최상단에 Lunar 객체 선언 (이미 있으면 생략)
+var Lunar = Lunar || {};
+
 ;(function(root,factory){
   if (typeof define==='function'&&define.amd){
     define(factory);
