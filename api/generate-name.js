@@ -8,6 +8,7 @@ const phoneticMap = {
   水: ['H', 'I', 'E', 'O', 'U']
 };
 
+
 const prompts = {
   en: (letters, traits, gender, purpose) => `
 Generate 3 unique English ${purpose === 'personal' ? 'given' : 'brand'} names for a ${gender}.
