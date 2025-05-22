@@ -1,4 +1,3 @@
-// api/sajuUtils.js
 const { Lunar } = require('lunar-javascript');
 
 const elementMap = {
@@ -19,9 +18,9 @@ function getSajuFromDate(dob) {
   const lunar = Lunar.fromYmd(year, month, day);
 
   return {
-    year: lunar.getYearGanZhi(),
-    month: lunar.getMonthGanZhi(),
-    day: lunar.getDayGanZhi()
+    year: lunar.getYearInGanZhi ? lunar.getYearInGanZhi() : lunar.yearInGanZhi(),
+    month: lunar.getMonthInGanZhi ? lunar.getMonthInGanZhi() : lunar.monthInGanZhi(),
+    day: lunar.getDayInGanZhi ? lunar.getDayInGanZhi() : lunar.dayInGanZhi()
   };
 }
 
