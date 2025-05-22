@@ -1,8 +1,7 @@
-
 // sajuUtils.js
+// 브라우저에서 <script src="/data/lunar.js">로 lunar.js가 로드되어 있다고 가정
 
-import sajuData from '../data/saju_full_1940_2030.json';
-
+// 1. 천간/지지 → 오행 변환표
 const elementMap = {
   '甲': '木', '乙': '木',
   '丙': '火', '丁': '火',
@@ -16,34 +15,45 @@ const elementMap = {
   '辰': '土', '丑': '土', '未': '土', '戌': '土'
 };
 
-// 생년월일 → 사주 기둥 가공
-export function getSajuFromDate(dob) {
-  const dateKey = dob.trim(); // yyyy-mm-dd
-  const raw = sajuData[dateKey];
-  if (!raw) throw new Error('Saju data not found for date: ' + dateKey);
+// 2. 생년월일(YYYY-MM-DD) → 사주 간지 변환
+function getSajuFromDate(dob) {
+  // dob = 'YYYY-MM-DD'
+  const [year, month, day] = dob.split('-').map(Number);
+
+  // Lunar는 month 1~12, day 1~31
+  const lunar = Lunar.fromYmd(year, month, day);
 
   return {
-    year: raw['년주']?.slice(0, 2) || '',
-    month: raw['월주']?.slice(0, 2) || '',
-    day: raw['일주']?.slice(0, 2) || '',
-    hour: raw['시주']?.slice(0, 2) || ''
+    year: lunar.getYearGanZhi(),   // 년주 (ex: 丙戌)
+    month: lunar.getMonthGanZhi(), // 월주
+    day: lunar.getDayGanZhi(),     // 일주
+    // 시주 필요하면: lunar.getTimeGanZhi()
   };
 }
 
-// 부족한 오행 추출
-export function getLackingElements(saju) {
+// 3. 부족한 오행 추출
+function getLackingElements(saju) {
+  // saju = { year: '丙戌', month: '甲午', day: '己未' ... }
   const counts = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
-  const pillars = [saju.year, saju.month, saju.day, saju.hour];
+  const pillars = [saju.year, saju.month, saju.day];
 
   for (const pillar of pillars) {
-    if (typeof pillar !== 'string' || pillar.length === 0) continue;
-    for (const char of [...pillar]) {
+    if (!pillar) continue;
+    for (const char of pillar) {
       const el = elementMap[char];
       if (el) counts[el]++;
     }
   }
 
+  // 0개인 오행만 추출
   return Object.entries(counts)
     .filter(([_, count]) => count === 0)
     .map(([el]) => el);
 }
+
+// --- 내보내기 (Node, ES6, 브라우저 환경 모두 지원)
+if (typeof module !== "undefined") {
+  module.exports = { getSajuFromDate, getLackingElements };
+}
+window.getSajuFromDate = getSajuFromDate;
+window.getLackingElements = getLackingElements;
