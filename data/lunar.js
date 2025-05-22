@@ -8494,3 +8494,6 @@
     I18n: I18n
   };
 });
+
+module.exports = { Lunar };
+
