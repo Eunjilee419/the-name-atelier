@@ -8495,5 +8495,9 @@
   };
 });
 
-module.exports = { Lunar };
+// lunar.js 맨 마지막에 추가
+if (typeof module !== 'undefined') {
+  module.exports = { Lunar };
+}
+
 
