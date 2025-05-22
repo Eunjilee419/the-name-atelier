@@ -11,18 +11,19 @@ const phoneticMap = {
 const prompts = {
   en: (letters, traits, gender, purpose) => `
 Generate 3 unique English ${purpose === 'personal' ? 'given' : 'brand'} names for a ${gender}.
-Each name MUST start with one of these letters ONLY: ${letters.join(', ')}.
+Each name MUST start ONLY with these letters: ${letters.join(', ')}.
 Traits to reflect: "${traits}".
-Respond ONLY in this format (one per line):
+Respond ONLY in this format, one per line:
 Name: Meaning
-Do not include any other text.
-If no suitable names, reply "No suitable names."
+Do NOT use hyphens (-) or other separators.
+If no suitable names, reply with "No suitable names."
 `,
   ko: (letters, traits, gender, purpose) => `
 당신은 전문 작명가입니다.
-아래 시작 알파벳(${letters.join(', ')})을 엄격히 사용해 한국식 ${purpose === 'personal' ? '이름' : '브랜드명'} 3개를 추천하세요.
+아래 시작 알파벳(${letters.join(', ')})만 엄격히 사용해 한국식 ${purpose === 'personal' ? '이름' : '브랜드명'} 3개를 추천하세요.
 "${traits}" 특성을 반영해야 합니다.
-출력 형식은 반드시 아래처럼 한 줄에 하나씩, 이름: 의미 형태만 출력하세요.
+출력 형식은 반드시 한 줄에 하나씩 "이름: 의미" 형태만 사용하세요.
+하이픈(-) 등 다른 구분자는 사용하지 마세요.
 적합한 이름이 없으면 "적합한 이름이 없습니다." 라고 출력하세요.
 `,
   zh: (letters, traits, gender, purpose) => `
@@ -30,13 +31,15 @@ If no suitable names, reply "No suitable names."
 请严格使用以下首字母(${letters.join(', ')})，为${purpose === 'personal' ? '中文名字' : '中文品牌名'}生成3个名字。
 名字必须反映特征："${traits}"。
 请仅按格式“名字: 寓意”逐行输出。
+不要使用连字符(-)或其他分隔符。
 如果没有合适的名字，请输出“没有合适的名字”。
 `,
   ja: (letters, traits, gender, purpose) => `
 あなたはプロの名付け師です。
-以下の頭文字(${letters.join(', ')})を厳密に使い、${purpose === 'personal' ? '人名' : 'ブランド名'}を3つ考えてください。
+以下の頭文字(${letters.join(', ')})のみを厳密に使い、${purpose === 'personal' ? '人名' : 'ブランド名'}を3つ考えてください。
 "${traits}"の特徴を反映してください。
-出力は「名前: 意味」の形式で1行ずつ書いてください。
+出力は「名前: 意味」の形式のみ1行ずつ書いてください。
+ハイフン(-)やその他の区切り文字は使わないでください。
 適切な名前がなければ「適切な名前がありません」と返してください。
 `
 };
@@ -89,10 +92,9 @@ module.exports = async function handler(req, res) {
 
     const lines = text.split('\n').map(l => l.trim()).filter(l => l);
 
-    // 파싱 시 - Meaning: 등도 처리하도록 강화
     const result = lines.map(line => {
-      let parts = line.split(/[-:] ?Meaning:? ?/i);
-      if (parts.length < 2) parts = line.split(':');
+      let parts = line.split(':');
+      if (parts.length < 2) parts = line.split(/[-:] ?Meaning:? ?/i);
       return {
         name: parts[0].trim(),
         meaning: parts.slice(1).join(':').trim(),
@@ -104,7 +106,12 @@ module.exports = async function handler(req, res) {
           e === '水' ? 'Water' : e
         ).join(', ')
       };
-    }).filter(item => item.name && item.meaning && item.name.toLowerCase() !== 'no suitable names' && item.name !== '적합한 이름이 없습니다' && item.name !== '没有合适的名字' && item.name !== '適切な名前がありません');
+    }).filter(item => item.name && item.meaning && ![
+      'No suitable names',
+      '적합한 이름이 없습니다',
+      '没有合适的名字',
+      '適切な名前がありません'
+    ].includes(item.name));
 
     if (result.length === 0) {
       return res.json({ result: [{
@@ -126,4 +133,3 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 };
-
