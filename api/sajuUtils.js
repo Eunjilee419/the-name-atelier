@@ -1,4 +1,6 @@
-// sajuUtils.js (Node.js용, window 제거)
+// api/sajuUtils.js
+const { Lunar } = require('lunar-javascript');
+
 const elementMap = {
   '甲': '木', '乙': '木',
   '丙': '火', '丁': '火',
@@ -12,22 +14,21 @@ const elementMap = {
   '辰': '土', '丑': '土', '未': '土', '戌': '土'
 };
 
-const { Lunar } = require('../data/lunar.js'); // Node.js require 방식 (파일 경로 맞춰 수정)
-
 function getSajuFromDate(dob) {
   const [year, month, day] = dob.split('-').map(Number);
   const lunar = Lunar.fromYmd(year, month, day);
+
   return {
     year: lunar.getYearGanZhi(),
     month: lunar.getMonthGanZhi(),
-    day: lunar.getDayGanZhi(),
-    // 시주 필요하면: lunar.getTimeGanZhi()
+    day: lunar.getDayGanZhi()
   };
 }
 
 function getLackingElements(saju) {
   const counts = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
   const pillars = [saju.year, saju.month, saju.day];
+
   for (const pillar of pillars) {
     if (!pillar) continue;
     for (const char of pillar) {
@@ -35,6 +36,7 @@ function getLackingElements(saju) {
       if (el) counts[el]++;
     }
   }
+
   return Object.entries(counts)
     .filter(([_, count]) => count === 0)
     .map(([el]) => el);
