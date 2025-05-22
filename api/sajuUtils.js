@@ -12,7 +12,7 @@ const elementMap = {
   '辰': '土', '丑': '土', '未': '土', '戌': '土'
 };
 
-const { Lunar } = require('/data/lunar.js'); // Node.js require 방식 (파일 경로 맞춰 수정)
+const { Lunar } = require('../data/lunar.js'); // Node.js require 방식 (파일 경로 맞춰 수정)
 
 function getSajuFromDate(dob) {
   const [year, month, day] = dob.split('-').map(Number);
