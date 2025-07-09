@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 // === 오행 매핑 유틸 (기존 sajuUtils.js 부분) ===
 const heavenlyStems = {
   "甲": "목", "乙": "목",
@@ -67,16 +69,38 @@ function generateNamePrompt(saju, lang) {
   return prompts[lang] || prompts["en"];
 }
 
-// === 메인 API 핸들러 (기존 generate-name-2.js 부분) ===
-// 아래는 Next.js API 예시, Express 등으로도 쉽게 바꿀 수 있음
-
 // 사주 데이터 불러오기 (경로 맞게 조절)
 const sajuFull = require('./saju_full_1940_2030.json');
 
+// 아래 부분을 통째로 복사!
 async function callGptNameApi(prompt) {
-  // GPT API 연동 함수 (실제 구현 필요)
-  // 예시: return await fetch( ... );
-  return ["예시이름1: 설명", "예시이름2: 설명", "예시이름3: 설명"];
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 400
+    })
+  });
+
+  const data = await response.json();
+
+  // 이름 3개만 뽑아서, "이름: 설명"형식을 나누어 반환
+  return data.choices[0].message.content
+    .split("\n")
+    .map(line => line.trim())
+    .filter(line => line)
+    .map(line => {
+      const [name, ...rest] = line.split(":");
+      return {
+        name: name ? name.trim() : "",
+        meaning: rest.length > 0 ? rest.join(":").trim() : ""
+      };
+    });
 }
 
 export default async function handler(req, res) {
