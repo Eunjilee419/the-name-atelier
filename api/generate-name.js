@@ -106,10 +106,15 @@ async function callGptNameApi(prompt) {
 // === 메인 API 핸들러 ===
 export default async function handler(req, res) {
   try {
-    const { birth, lang } = req.body;  // 예: birth="1997-05-15", lang="en"
+    // dob 또는 birth 둘 다 지원
+    const { dob, birth, lang } = req.body;
+    const birthday = dob || birth;
+    if (!birthday) {
+      return res.status(400).json({error: "생년월일(birthday) 파라미터가 필요합니다."});
+    }
 
     // 1. 사주 정보 추출
-    const userSaju = sajuFull[birth];
+    const userSaju = sajuFull[birthday];
     if (!userSaju) {
       return res.status(404).json({error: "해당 생년월일 사주 정보 없음"});
     }
@@ -133,3 +138,4 @@ export default async function handler(req, res) {
     return res.status(500).json({error: "서버 오류", detail: err.message});
   }
 }
+
