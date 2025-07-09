@@ -133,57 +133,68 @@
     </div>
 
   </footer>
+<script>
+  document.getElementById('nameForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
 
-  <script>
-    document.getElementById('nameForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      let dob = this.dob.value;
-      dob = dob.replace(/\./g, '-').replace(/\s/g, '');
+    // 날짜 입력값 안전하게 변환 (마침표, 슬래시, 공백 모두 → "-")
+    let dob = this.dob.value;
+    dob = dob.replace(/[.\/\s]+/g, '-').replace(/^-|-$/g, '');
 
-      if (!dob) {
-        alert('날짜를 정확히 입력해주세요.');
+    if (!dob) {
+      alert('날짜를 정확히 입력해주세요.');
+      return;
+    }
+
+    let purpose = this.purpose.value;
+    let gender = this.gender.value;
+    let traits = this.traits.value;
+    let lang = document.getElementById('langSelect').value || 'en';
+
+    const resultDiv = document.getElementById('results');
+    const loadingDiv = document.getElementById('loading');
+
+    loadingDiv.style.display = 'block';
+    resultDiv.innerHTML = '';
+
+    // Analytics (있으면)
+    if (typeof gtag === "function") {
+      gtag('event', 'generate_click', {
+        'event_category': 'Name Generator',
+        'event_label': 'Generate Button'
+      });
+    }
+
+    // 서버로 POST 요청 (변환된 dob 값 사용)
+    fetch('/api/generate-name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dob, purpose, gender, traits, lang })
+    })
+    .then(response => response.json())
+    .then(data => {
+      loadingDiv.style.display = 'none';
+
+      if (!data.result || data.result.length === 0) {
+        resultDiv.innerHTML = '<p>조건에 맞는 이름이 없습니다.</p>';
         return;
       }
 
-      let purpose = this.purpose.value;
-      let gender = this.gender.value;
-      let traits = this.traits.value;
-      let lang = document.getElementById('langSelect').value || 'en';
-
-      const resultDiv = document.getElementById('results');
-      const loadingDiv = document.getElementById('loading');
-
-      loadingDiv.style.display = 'block';
-      resultDiv.innerHTML = '';
-
-      fetch('/api/generate-name', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dob, purpose, gender, traits, lang })
-      })
-      .then(response => response.json())
-      .then(data => {
-        loadingDiv.style.display = 'none';
-
-        if (!data.result || data.result.length === 0) {
-          resultDiv.innerHTML = '<p>조건에 맞는 이름이 없습니다.</p>';
-          return;
-        }
-
-        resultDiv.innerHTML = data.result.map(item =>
-          `<div class="name-item">
-            <strong>🔤 ${item.name}</strong><br/>
-            <span>🌿 Element: ${item.element}</span><br/>
-            <span>💬 ${item.meaning}</span>
-          </div>`
-        ).join('');
-      })
-      .catch(err => {
-        loadingDiv.style.display = 'none';
-        resultDiv.innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
-      });
+      resultDiv.innerHTML = data.result.map(item =>
+        `<div class="name-item">
+          <strong>🔤 ${item.name}</strong><br/>
+          <span>🌿 Element: ${item.element}</span><br/>
+          <span>💬 ${item.meaning}</span>
+        </div>`
+      ).join('');
+    })
+    .catch(err => {
+      loadingDiv.style.display = 'none';
+      resultDiv.innerHTML = `<p style="color:red;">오류 발생: ${err.message}</p>`;
     });
-  </script>
+  });
+</script>
+
 
 </body>
 </html>
