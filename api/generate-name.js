@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-// === 오행 매핑 유틸 (기존 sajuUtils.js 부분) ===
+// === 오행 매핑 ===
 const heavenlyStems = {
   "甲": "목", "乙": "목",
   "丙": "화", "丁": "화",
@@ -69,10 +69,10 @@ function generateNamePrompt(saju, lang) {
   return prompts[lang] || prompts["en"];
 }
 
-// 사주 데이터 불러오기 (경로 맞게 조절)
+// === 사주 DB 불러오기 ===
 const sajuFull = require('./saju_full_1940_2030.json');
 
-// 아래 부분을 통째로 복사!
+// === GPT API 연동 (환경변수 방식) ===
 async function callGptNameApi(prompt) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -89,7 +89,7 @@ async function callGptNameApi(prompt) {
 
   const data = await response.json();
 
-  // 이름 3개만 뽑아서, "이름: 설명"형식을 나누어 반환
+  // "이름: 설명" 형식 파싱
   return data.choices[0].message.content
     .split("\n")
     .map(line => line.trim())
@@ -103,9 +103,10 @@ async function callGptNameApi(prompt) {
     });
 }
 
+// === 메인 API 핸들러 ===
 export default async function handler(req, res) {
   try {
-    const { birth, lang } = req.body;  // birth="1997-05-15", lang="en"
+    const { birth, lang } = req.body;  // 예: birth="1997-05-15", lang="en"
 
     // 1. 사주 정보 추출
     const userSaju = sajuFull[birth];
@@ -119,10 +120,10 @@ export default async function handler(req, res) {
     // 3. 언어별 프롬프트 생성
     const prompt = generateNamePrompt(userSaju, lang);
 
-    // 4. GPT API 호출
+    // 4. GPT API 호출 (실제 이름 추천 결과 받기)
     const names = await callGptNameApi(prompt);
 
-    // 5. 결과 리턴
+    // 5. 결과 반환
     return res.status(200).json({
       names,
       lacking,
