@@ -138,22 +138,22 @@
   document.getElementById('nameForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    // 날짜 입력값 안전하게 변환 (마침표, 슬래시, 공백 모두 → "-")
+    // 1. 사용자가 입력한 날짜를 가져옴
     let dob = this.dob.value;
+
+    // 2. 마침표/슬래시/공백을 -로 바꿈 (예: 1974.7.3 → 1974-7-3)
     dob = dob.replace(/[.\/\s]+/g, '-').replace(/^-|-$/g, '');
 
-    // padDate 함수 추가
-    function padDate(dob) {
-      // "1974-7-3" → "1974-07-03"
-      const [y, m, d] = dob.split("-");
-      return [
-        y,
-        m && m.length === 1 ? "0" + m : m,
-        d && d.length === 1 ? "0" + d : d
-      ].join("-");
+    // 3. 월과 일이 한 자리면 앞에 0을 붙여서 두 자리로 만든다 (중요!!)
+    // 예: 1974-7-3 → 1974-07-03
+    if (dob) {
+      const parts = dob.split("-");
+      if (parts[1] && parts[1].length === 1) parts[1] = "0" + parts[1];
+      if (parts[2] && parts[2].length === 1) parts[2] = "0" + parts[2];
+      dob = parts.join("-");
     }
-    dob = padDate(dob);
 
+    // 4. 날짜가 없으면 경고창!
     if (!dob) {
       alert('날짜를 정확히 입력해주세요.');
       return;
@@ -170,7 +170,7 @@
     loadingDiv.style.display = 'block';
     resultDiv.innerHTML = '';
 
-    // Analytics (있으면)
+    // Google Analytics (있으면)
     if (typeof gtag === "function") {
       gtag('event', 'generate_click', {
         'event_category': 'Name Generator',
@@ -178,7 +178,7 @@
       });
     }
 
-    // 서버로 POST 요청 (변환된 dob 값 사용)
+    // 5. 서버에 이름 생성 요청!
     fetch('/api/generate-name', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -207,6 +207,8 @@
     });
   });
 </script>
+
+
 
 
 
