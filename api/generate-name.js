@@ -64,14 +64,16 @@ function generateNamePrompt(saju, lang) {
 
 오행은 반드시 하나만 선택: 목, 화, 토, 금, 수`,
 
-    en: `You must follow the exact format below. Do not add any extra text.
+en: `You must follow the exact format below. Do not add any extra text.
 
 Name | Element | Meaning
 Name | Element | Meaning
 Name | Element | Meaning
 
 Rules:
-- Use ONLY real English names (no Korean romanization)
+- Use ONLY real human or brand names
+- Names should sound modern and natural in English
+- DO NOT use tree names or nature objects
 - Element must be exactly one of: Wood, Fire, Earth, Metal, Water
 - Each meaning must be under 10 words
 
