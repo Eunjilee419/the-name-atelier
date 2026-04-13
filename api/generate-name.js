@@ -119,7 +119,7 @@ module.exports = async function handler(req, res) {
     const names = await callGptNameApi(prompt);
 
     return res.status(200).json({
-      names,
+      result: names,
       lacking,
       saju: userSaju
     });
