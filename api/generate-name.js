@@ -54,46 +54,93 @@ function generateNamePrompt(saju, lang) {
 
   const prompts = {
     ko: `아래 사주 정보를 참고해 이름 3개를 추천해 주세요.
-부족한 오행은 '${lacking.join(",")}' 입니다.
 
-반드시 아래 형식으로만 출력하세요. 다른 문장 절대 금지:
+부족한 오행: ${lacking.join(",")}
 
+오행별 초성 규칙:
+목: ㄱ,ㅋ
+화: ㄴ,ㄷ,ㄹ,ㅌ
+토: ㅁ,ㅂ,ㅍ
+금: ㅅ,ㅈ,ㅊ
+수: ㅇ,ㅎ
+
+규칙:
+- 반드시 부족한 오행에 해당하는 초성으로 시작해야 합니다
+- 실제 사람 이름처럼 자연스러워야 합니다
+- 설명형 단어 금지 (예: 소수, 설수 금지)
+- 자연물 이름 금지
+
+출력 형식 (반드시 지킬 것):
 이름 | 오행 | 의미
 이름 | 오행 | 의미
-이름 | 오행 | 의미
+이름 | 오행 | 의미`,
 
-오행은 반드시 하나만 선택: 목, 화, 토, 금, 수`,
+    en: `Generate 3 names based on the saju.
 
-en: `You must follow the exact format below. Do not add any extra text.
+Lacking elements: ${lacking.map(elementToEnglish).join(", ")}
 
-Name | Element | Meaning
-Name | Element | Meaning
-Name | Element | Meaning
+Element to initial letter mapping:
+Wood: G, K
+Fire: N, D, R, T
+Earth: M, B, P
+Metal: S, J, C
+Water: O, H
 
 Rules:
+- Each name MUST start with a letter matching the lacking elements
 - Use ONLY real human or brand names
-- Names should sound modern and natural in English
-- DO NOT use tree names or nature objects
-- Element must be exactly one of: Wood, Fire, Earth, Metal, Water
-- Each meaning must be under 10 words
+- DO NOT use nature words or object names
+- DO NOT create literal meaning-based words
+- Names must sound natural in English
 
-Lacking elements: ${lacking.map(elementToEnglish).join(", ")}`,
+Output format ONLY:
+Name | Element | Meaning
+Name | Element | Meaning
+Name | Element | Meaning`,
 
-    zh: `请严格按照以下格式输出，不要添加任何额外内容：
+    zh: `请根据以下规则生成3个名字：
 
+缺失五行：${lacking.join("、")}
+
+五行对应首字母规则：
+木: G,K
+火: N,D,R,T
+土: M,B,P
+金: S,J,C
+水: O,H
+
+规则：
+- 名字必须以对应五行的字母开头
+- 必须像真实人名或品牌名
+- 禁止描述性词语
+- 禁止自然物名称
+
+输出格式：
 名字 | 五行 | 含义
 名字 | 五行 | 含义
-名字 | 五行 | 含义
+名字 | 五行 | 含义`,
 
-缺失五行：${lacking.join("、")}`,
+    ja: `以下のルールで名前を3つ生成してください：
 
-    ja: `必ず以下の形式で出力してください。余計な文章は禁止：
+不足五行：${lacking.join("、")}
 
+五行と頭文字の対応：
+木: G,K
+火: N,D,R,T
+土: M,B,P
+金: S,J,C
+水: O,H
+
+ルール：
+- 必ず対応する頭文字で始めること
+- 実在の人名のように自然であること
+- 説明的な単語は禁止
+- 自然物の名前は禁止
+
+出力形式：
 名前 | 五行 | 意味
 名前 | 五行 | 意味
-名前 | 五行 | 意味
-
-不足五行：${lacking.join("、")}`
+名前 | 五行 | 意味`
   };
 
   return prompts[lang] || prompts["en"];
