@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
 // === 오행 매핑 ===
 const heavenlyStems = {
@@ -69,10 +69,8 @@ function generateNamePrompt(saju, lang) {
   return prompts[lang] || prompts["en"];
 }
 
-// === 사주 DB 불러오기 ===
 const sajuFull = require('./saju_full_1940_2030.json');
 
-// === GPT API 연동 (환경변수 방식) ===
 async function callGptNameApi(prompt) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -81,15 +79,14 @@ async function callGptNameApi(prompt) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 400
+      max_tokens: 150
     })
   });
 
   const data = await response.json();
 
-  // "이름: 설명" 형식 파싱
   return data.choices[0].message.content
     .split("\n")
     .map(line => line.trim())
@@ -103,39 +100,30 @@ async function callGptNameApi(prompt) {
     });
 }
 
-// === 메인 API 핸들러 ===
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
-    // dob 또는 birth 둘 다 지원
     const { dob, birth, lang } = req.body;
     const birthday = dob || birth;
+
     if (!birthday) {
-      return res.status(400).json({error: "생년월일(birthday) 파라미터가 필요합니다."});
+      return res.status(400).json({ error: "생년월일(birthday) 파라미터가 필요합니다." });
     }
 
-    // 1. 사주 정보 추출
     const userSaju = sajuFull[birthday];
     if (!userSaju) {
-      return res.status(404).json({error: "해당 생년월일 사주 정보 없음"});
+      return res.status(404).json({ error: "해당 생년월일 사주 정보 없음" });
     }
 
-    // 2. 부족 오행 계산
     const lacking = getLackingElements(userSaju);
-
-    // 3. 언어별 프롬프트 생성
     const prompt = generateNamePrompt(userSaju, lang);
-
-    // 4. GPT API 호출 (실제 이름 추천 결과 받기)
     const names = await callGptNameApi(prompt);
 
-    // 5. 결과 반환
     return res.status(200).json({
       names,
       lacking,
       saju: userSaju
     });
   } catch (err) {
-    return res.status(500).json({error: "서버 오류", detail: err.message});
+    return res.status(500).json({ error: "서버 오류", detail: err.message });
   }
-}
-
+};
