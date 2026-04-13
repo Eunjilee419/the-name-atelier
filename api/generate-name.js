@@ -145,7 +145,8 @@ Name | Element | Meaning`,
 名前 | 五行 | 意味
 名前 | 五行 | 意味
 名前 | 五行 | 意味`
-
+  };
+  
   return prompts[lang] || prompts["en"];
 }
 
