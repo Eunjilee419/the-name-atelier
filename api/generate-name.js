@@ -48,24 +48,48 @@ function elementToEnglish(ko) {
   return elementMapEn[ko] || ko;
 }
 
+// ✅ 여기 수정됨 (형식 강제)
 function generateNamePrompt(saju, lang) {
   const lacking = getLackingElements(saju);
+
   const prompts = {
-    ko: `아래 사주 정보를 참고해 이름 3개를 추천해 주세요. 
-    부족한 오행은 '${lacking.join(",")}' 입니다. 
-    이름에는 부족한 오행을 보완하는 한자(음)이나 의미가 들어가야 합니다.
-    결과는 '이름: 의미' 형식으로 3개만, 각 10자 이내로 제시하세요.`,
-    en: `Suggest 3 names based on the following saju (Four Pillars) information.
-    The lacking elements are '${lacking.map(elementToEnglish).join(", ")}'.
-    Each name should reinforce the missing elements with sound or meaning.
-    Please provide 3 names with short explanations, each within 15 characters.`,
+    ko: `아래 사주 정보를 참고해 이름 3개를 추천해 주세요.
+부족한 오행은 '${lacking.join(",")}' 입니다.
+
+반드시 아래 형식으로만 출력하세요 (다른 문장 금지):
+이름 | 오행 | 의미
+이름 | 오행 | 의미
+이름 | 오행 | 의미
+
+오행은 반드시 하나만 선택: 목, 화, 토, 금, 수`,
+
+    en: `Suggest 3 names based on the following saju (Four Pillars).
+The lacking elements are '${lacking.map(elementToEnglish).join(", ")}'.
+
+Output strictly in this format only (no extra text):
+Name | Element | Meaning
+Name | Element | Meaning
+Name | Element | Meaning
+
+Element must be one of: Wood, Fire, Earth, Metal, Water`,
+
     zh: `请根据以下八字信息推荐3个名字。
-    缺失的五行为：${lacking.join("、")}。
-    名字需补足缺失五行的字或含义。每个名字请附简短解释，15字以内。`,
+缺失的五行为：${lacking.join("、")}。
+
+请严格按照以下格式输出（不要添加其他内容）：
+名字 | 五行 | 含义
+名字 | 五行 | 含义
+名字 | 五行 | 含义`,
+
     ja: `下記の四柱推命情報をもとに、3つの名前を提案してください。
-    不足している五行は「${lacking.join("、")}」です。
-    不足五行を補う漢字または意味を含めてください。各名前は簡単な説明付きで15文字以内で。`
+不足している五行は「${lacking.join("、")}」です。
+
+必ず以下の形式で出力してください（余計な文章禁止）：
+名前 | 五行 | 意味
+名前 | 五行 | 意味
+名前 | 五行 | 意味`
   };
+
   return prompts[lang] || prompts["en"];
 }
 
@@ -87,15 +111,18 @@ async function callGptNameApi(prompt) {
 
   const data = await response.json();
 
+  // ✅ 여기 수정됨 (| 기준 파싱)
   return data.choices[0].message.content
     .split("\n")
     .map(line => line.trim())
     .filter(line => line)
     .map(line => {
-      const [name, ...rest] = line.split(":");
+      const [name, element, meaning] = line.split("|").map(v => v.trim());
+
       return {
-        name: name ? name.trim() : "",
-        meaning: rest.length > 0 ? rest.join(":").trim() : ""
+        name: name || "",
+        element: element || "",
+        meaning: meaning || ""
       };
     });
 }
@@ -123,6 +150,7 @@ module.exports = async function handler(req, res) {
       lacking,
       saju: userSaju
     });
+
   } catch (err) {
     return res.status(500).json({ error: "서버 오류", detail: err.message });
   }
