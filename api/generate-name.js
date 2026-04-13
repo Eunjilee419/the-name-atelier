@@ -56,38 +56,42 @@ function generateNamePrompt(saju, lang) {
     ko: `아래 사주 정보를 참고해 이름 3개를 추천해 주세요.
 부족한 오행은 '${lacking.join(",")}' 입니다.
 
-반드시 아래 형식으로만 출력하세요 (다른 문장 금지):
+반드시 아래 형식으로만 출력하세요. 다른 문장 절대 금지:
+
 이름 | 오행 | 의미
 이름 | 오행 | 의미
 이름 | 오행 | 의미
 
 오행은 반드시 하나만 선택: 목, 화, 토, 금, 수`,
 
-    en: `Suggest 3 names based on the following saju (Four Pillars).
-The lacking elements are '${lacking.map(elementToEnglish).join(", ")}'.
+    en: `You must follow the exact format below. Do not add any extra text.
 
-Output strictly in this format only (no extra text):
 Name | Element | Meaning
 Name | Element | Meaning
 Name | Element | Meaning
 
-Element must be one of: Wood, Fire, Earth, Metal, Water`,
+Rules:
+- Use ONLY real English names (no Korean romanization)
+- Element must be exactly one of: Wood, Fire, Earth, Metal, Water
+- Each meaning must be under 10 words
 
-    zh: `请根据以下八字信息推荐3个名字。
-缺失的五行为：${lacking.join("、")}。
+Lacking elements: ${lacking.map(elementToEnglish).join(", ")}`,
 
-请严格按照以下格式输出（不要添加其他内容）：
+    zh: `请严格按照以下格式输出，不要添加任何额外内容：
+
 名字 | 五行 | 含义
 名字 | 五行 | 含义
-名字 | 五行 | 含义`,
+名字 | 五行 | 含义
 
-    ja: `下記の四柱推命情報をもとに、3つの名前を提案してください。
-不足している五行は「${lacking.join("、")}」です。
+缺失五行：${lacking.join("、")}`,
 
-必ず以下の形式で出力してください（余計な文章禁止）：
+    ja: `必ず以下の形式で出力してください。余計な文章は禁止：
+
 名前 | 五行 | 意味
 名前 | 五行 | 意味
-名前 | 五行 | 意味`
+名前 | 五行 | 意味
+
+不足五行：${lacking.join("、")}`
   };
 
   return prompts[lang] || prompts["en"];
@@ -111,20 +115,24 @@ async function callGptNameApi(prompt) {
 
   const data = await response.json();
 
-  // ✅ 여기 수정됨 (| 기준 파싱)
   return data.choices[0].message.content
     .split("\n")
     .map(line => line.trim())
-    .filter(line => line)
+    .filter(line => line.includes("|")) // ✅ 형식 아닌 줄 제거
     .map(line => {
-      const [name, element, meaning] = line.split("|").map(v => v.trim());
+      const parts = line.split("|").map(v => v.trim());
+
+      if (parts.length !== 3) return null;
+
+      const [name, element, meaning] = parts;
 
       return {
-        name: name || "",
-        element: element || "",
-        meaning: meaning || ""
+        name,
+        element,
+        meaning
       };
-    });
+    })
+    .filter(v => v !== null);
 }
 
 module.exports = async function handler(req, res) {
